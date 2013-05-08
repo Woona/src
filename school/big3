@@ -1,0 +1,36 @@
+#!/bin/bash
+bnum1=0; bnum2=0; bnum3=0; cap=$(/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport /usr/sbin/airport -I | grep "BSSID*" | awk '{print $2}')
+/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport /usr/sbin/airport -s | grep "BCBOE1" | while read line; do
+	if [[ $(echo $line | awk '{print $3}' | sed 's/-//g') -gt $bnum1 ]]; then
+		bnum1=$(echo $line | awk '{print $3}' | sed 's/-//g')
+		bline1=$line
+	elif [[ $(echo $line | awk '{print $3}' | sed 's/-//g') -gt $bnum2 ]]; then
+		bnum2=$(echo $line | awk '{print $3}' | sed 's/-//g')
+		bline2=$line
+	elif [[ $(echo $line | awk '{print $3}' | sed 's/-//g') -gt $bnum3 ]]; then
+		bnum3=$(echo $line | awk '{print $3}' | sed 's/-//g')
+		bline3=$line
+	fi
+	if [[ $(echo $line | awk '{print $2}') = "$cap" ]]; then
+		echo $(echo $line | awk '{print $3}') > ~/Desktop/.b30
+	fi
+	echo $(echo "$bline1" | awk '{print $2 _ $3}') > ~/Desktop/.b31
+	echo $(echo "$bline2" | awk '{print $2 _ $3}') > ~/Desktop/.b32
+	echo $(echo "$bline3" | awk '{print $2 _ $3}') > ~/Desktop/.b33
+done
+if [[ $1 = s ]]; then
+	echo "$(cat ~/Desktop/.b31 | sed 's/-/ /g' | awk '{print $1}') $(cat ~/Desktop/.b32 | sed 's/-/ /g' | awk '{print $1}') $(cat ~/Desktop/.b33 | sed 's/-/ /g' | awk '{print $1}')"
+	rm ~/Desktop/.b31; rm ~/Desktop/.b32; rm ~/Desktop/.b33
+else
+	echo "+-----------------------------+"
+	echo "| 3 Closest APs           RSI |"
+	echo "| $(cat ~/Desktop/.b31 | sed 's/-/       -/g') |"; rm ~/Desktop/.b31
+	echo "| $(cat ~/Desktop/.b32 | sed 's/-/       -/g') |"; rm ~/Desktop/.b32
+	echo "| $(cat ~/Desktop/.b33 | sed 's/-/       -/g') |"; rm ~/Desktop/.b33
+	echo "+-----------------------------+"
+	echo "| Current AP              RSI |"
+	echo "| $cap       $(cat ~/Desktop/.b30) |"; rm ~/Desktop/.b30
+	echo "+-----------------------------+"
+	echo "| Time Taken = $SECONDS sec          |"
+	echo "+-----------------------------+"
+fi

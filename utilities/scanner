@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# set variables
+counter=1;ex=false; ex2=true; log=false
+Usage="Usage [-l open log]"
+while [[ ${1:0:1} = '-' ]]; do N=1; L=${#1}
+while [[ $N -lt $L ]]; do
+	case ${1:$N:1} in
+	'l') log=true ;;
+	*) echo $Usage; exit ;;
+	esac
+N=$(($N+1)); done; shift; done
+
+#log
+until [ -d ~/Library/Scanner ]; do mkdir ~/Library/Scanner; done
+echo "$(date) Scanning started" >> ~/Library/Scanner/Scan.log
+if [ $log = true ]; then open -a TextEdit ~/Library/Scanner/Scan.log; exit; fi
+
+# wrap the whole thing in a while loop 
+while true ; do
+
+# scan for connections
+while [ $ex = false ]; do if [[ "$(echo $(netstat | grep ".rfb ")a)" = a ]]||[[ "$(echo $(netstat | grep ".ssh ")a)" = a ]]; then sleep $counter; else networksetup -setairportpower en0 off; ex=true; ex2=false; echo "$(date) Connection detected, turning wifi off" >> ~/Library/Scanner/Scan.log; fi; done
+
+# scan for wifi power
+while [ $ex2 = false ]; do if [ $(networksetup -getairportpower en0 | awk '{print $4}') = Off ]; then sleep $counter; else ex2=true; ex=false; echo "$(date) Wifi power on, scanning" >> ~/Library/Scanner/Scan.log; fi; done
+
+done

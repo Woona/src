@@ -1,0 +1,2 @@
+#!/bin/bash
+cat - | sed 's/[a]/4/g;s/[b]/B/g;s/[c]/C/g;s/d/D/g;s/[e]/3/g;s/[f]/F/g;s/[g]/G/g;s/[h]/H/g;s/[i]/1/g;s/[j]/J/g;s/[k]/K/g;s/[l]/L/g;s/[m]/M/g;s/[n]/N/g;s/[o]/0/g;s/[p]/P/g;s/[q]/Q/g;s/[r]/R/g;s/[s]/S/g;s/[t]/T/g;s/[u]/U/g;s/[w]/W/g;s/[x]/X/g;s/[y]/Y/g;s/[z]/Z/g;s/[A]/4/g;s/[E]/3/g;s/[I]/1/g;s/[O]/0/g;s/[ ]/_/g'

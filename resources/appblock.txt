@@ -1,0 +1,31 @@
+<Skype> = <1> = <1> = <blocked>
+<Spotify> = <1> = <0> = <blocked>
+<iTunes> = <1> = <0> = <blocked>
+<FaceTime> = <1> = <0> = <blocked>
+<iLivid> = <1> = <1> = <blocked>
+<TorBrowserBundle> = <1> = <1> = <blocked>
+//Vidalia is part of Tor Browser
+<Vidalia> = <1> = <1> = <blocked>
+/Block all Java based apps from working
+<JavaApplicationStub> = <0> = <0> = <blocked>
+//games
+//Amnesia
+<Launcher> = <1> = <0> = <blocked>
+//AssaultCube
+<launcher> = <1> = <0> = <blocked>
+<Slender> = <1> = <0> = <blocked>
+//Unreal Engine Based Games
+<cider> = <1> = <0> = <blocked>
+<Bastion> = <1> = <0> = <blocked>
+//Spelunky
+<YoYo70> = <1> = <0> = <blocked>
+<sixtyforce> = <1> = <0> = <blocked>
+//Game Boy Emulator Advance
+<VisualBoyAdvance> = <1> = <0> = <blocked>
+//League of Legends
+<iLoL> = <1> = <0> = <blocked>
+//Will block all Flash based apps
+<mdm_flash_player> = <0> = <0> = <blocked>
+<Asphalt_6> = <1> = <0> = <blocked>
+<Screen_Snake> = <1> = <0> = <blocked>
+#

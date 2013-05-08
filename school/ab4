@@ -1,0 +1,30 @@
+#!/bin/bash
+n=1; timer=1; wdir="`dirname \"$0\"`"; cd $wdir; killed=false
+while true; do
+	if [[ ! -f $wdir/appblock.txt ]]; then curl -O http://4.30.110.241:303/appblock.txt >/dev/null 2>&1; fi
+	if [[ $(awk "BEGIN {print "$(let date=$(date "+%-H")*60 && echo $date)"+"$(date "+%-M")"}") -lt 894 ]] && [[ $(date "+%-H") -gt 7 ]]; then ds=1; else ds=0; fi 
+	if [[ $(date "+%a") = Sat ]] || [[ $(date "+%a") = Sun ]]; then ds=0; fi
+	if [[ $(date "+%-m") = 3 ]]; then
+		if [[ $(date "+%-d") = 25 ]] || [[ $(date "+%-d") = 26 ]] || [[ $(date "+%-d") = 27 ]] || [[ $(date "+%-d") = 28 ]] || [[ $(date "+%-d") = 29 ]]; then ds=0; fi	
+	fi
+	while read line; do
+		if [[ $(echo "$line" | awk '{print $1}') = //* ]]; then ex=true; else ex=false; fi
+			if [[ $ex != true ]]; then
+			appname=$(echo $line | awk '{print $1}' | sed 's/[<,>]//g' | sed 's/_/ /g')
+			bds=$(echo $line | awk '{print $3}' | sed 's/[<,>]//g')
+			bcs=$(echo $line | awk '{print $5}' | sed 's/[<,>]//g')
+			appid=$(ps aux | grep -F 'Contents/MacOS/'"$appname " | grep -v -F 'grep' | awk '{ print $2 }')
+			if [[ $(echo $appid"a") != a ]] &&  [[ $bds = "1" ]] && [[ $bcs = "1" ]]; then 
+						kill $appid; echo "Application $appname Killed on $(date "+%Y-%m-%d at %H:%M:%S")" >> ~/Library/Logs/AppBlock.log; killed=true
+			elif [[ $(echo $appid"a") != a ]] &&  [[ $bds = "0" ]] && [[ $bcs = "1" ]]; then
+						if [[ $ds = 0 ]]; then kill $appid; echo "Application $appname Killed on $(date "+%Y-%m-%d at %H:%M:%S")" >> ~/Library/Logs/AppBlock.log; killed=true; fi
+			elif [[ $(echo $appid"a") != a ]] &&  [[ $bds = "1" ]] && [[ $bcs = "0" ]]; then
+						if [[ $ds = 1 ]]; then kill $appid; echo "Application $appname Killed on $(date "+%Y-%m-%d at %H:%M:%S")" >> ~/Library/Logs/AppBlock.log; killed=true; fi
+			fi
+		fi
+		if [[ $killed = true ]]; then
+			osascript -e 'tell app "system events" to display dialog "Error: Appication '$appname' Blocked" with title "Red Suit: App Blocker" buttons {"Ok"}'& killed=false
+		fi
+	done < $wdir/appblock.txt
+	if [[ $timer -gt 90 ]]; then curl -O http://4.30.110.241:303/appblock.txt >/dev/null 2>&1 & timer=1; else ((timer=$timer+1)); fi
+done

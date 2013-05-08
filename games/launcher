@@ -1,0 +1,39 @@
+#!/bin/bash
+function launch_ {
+	until [[ -d ~/Library/xzmp ]]; do
+		read -p "Please input your 1 character avatar: " -n 1 avatar; yn=x
+		until [[ $yn = n ]] || [[ $yn = y ]]; do
+			clear
+			echo 'You have selected "'$avatar'" is this ok?'
+			read -p "(y/n): " -n 1 yn
+		done
+		if [[ $yn = y ]]; then
+			mkdir ~/Library/xzmp
+			echo $avatar > ~/Library/xzmp/avatar
+			cd ~/Library/xzmp
+			curl -O https://dl.dropboxusercontent.com/u/37648457/xzmp/xzmpgame.sh >/dev/null 2>&1
+			curl -O https://dl.dropboxusercontent.com/u/37648457/xzmp/version >/dev/null 2>&1
+			curl -O https://dl.dropboxusercontent.com/u/37648457/xzmp/nc >/dev/null 2>&1
+		fi
+	done
+}
+function updatecheck_ {
+	mkdir  ~/Library/xzmp/tmp; cd ~/Library/xzmp/tmp
+	curl -O https://dl.dropboxusercontent.com/u/37648457/xzmp/version >/dev/null 2>&1
+	if [[ $(cat ~/Library/xzmp/tmp/version) != $(cat ~/Library/xzmp/version) ]]; then
+		echo "Update found, updating..."
+		cd ~/Library/xzmp
+		curl -O https://dl.dropboxusercontent.com/u/37648457/xzmp/xzmpgame.sh >/dev/null 2>&1
+		curl -O https://dl.dropboxusercontent.com/u/37648457/xzmp/version >/dev/null 2>&1
+	else
+		echo "No updates found..."
+	fi
+	rm -rf ~/Library/xzmp/tmp
+	chmod +x ~/Library/xzmp/nc ~/Library/xzmp/xzmpgame.sh
+}
+echo "Launching..."
+launch_
+echo "Checking for updates..."
+updatecheck_
+echo "Running..."
+cd; bash ~/Library/xzmp/xzmpgame.sh register

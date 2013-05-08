@@ -1,0 +1,29 @@
+#!/bin/bash
+new=false; wdir="`dirname \"$0\"`"
+while true; do
+iold=$(cat $wdir/abdiag.txt); new=true
+sleep 0.125
+inew=$(cat $wdir/abdiag.txt); new=false
+((diff=$inew-$iold)) >/dev/null 2>&1
+if [[ $diff = 0 ]]; then echo "                      0x $(date +%s)"; fi
+if [[ $diff = 1 ]]; then echo "*                     1x $(date +%s)"; fi
+if [[ $diff = 2 ]]; then echo "**                    2x $(date +%s)"; fi
+if [[ $diff = 3 ]]; then echo "***                   3x $(date +%s)"; fi
+if [[ $diff = 4 ]]; then echo "****                  4x $(date +%s)"; fi
+if [[ $diff = 5 ]]; then echo "*****                 5x $(date +%s)"; fi
+if [[ $diff = 6 ]]; then echo "******                6x $(date +%s)"; fi
+if [[ $diff = 7 ]]; then echo "********              7x $(date +%s)"; fi
+if [[ $diff = 8 ]]; then echo "*********             8x $(date +%s)"; fi
+if [[ $diff = 9 ]]; then echo "**********            9x $(date +%s)"; fi
+if [[ $diff = 10 ]]; then echo "***********           10x $(date +%s)"; fi
+if [[ $diff = 11 ]]; then echo "************          11x $(date +%s)"; fi
+if [[ $diff = 12 ]]; then echo "*************         12x $(date +%s)"; fi
+if [[ $diff = 13 ]]; then echo "**************        13x $(date +%s)"; fi
+if [[ $diff = 14 ]]; then echo "***************       14x $(date +%s)"; fi
+if [[ $diff = 15 ]]; then echo "****************      15x $(date +%s)"; fi
+if [[ $diff = 16 ]]; then echo "*****************     16x $(date +%s)"; fi
+if [[ $diff = 17 ]]; then echo "******************    17x $(date +%s)"; fi
+if [[ $diff = 18 ]]; then echo "*******************   18x $(date +%s)"; fi
+if [[ $diff = 19 ]]; then echo "********************  19x $(date +%s)"; fi
+if [[ $diff = 20 ]]; then echo "********************* 20x $(date +%s)"; fi
+done

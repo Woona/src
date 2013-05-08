@@ -1,0 +1,529 @@
+#!/bin/bash
+function save { p2dir="/Users/Shared/shellspaceserver/p2"
+	if [[ $1 = p1 ]]; then
+		if [[ $2 = nohealth ]]; then
+			echo "$p1laser" > ~/Library/shellspacetmp/p1/laser
+			echo "$p1x" > ~/Library/shellspacetmp/p1/x
+			echo "$p1shield" > ~/Library/shellspacetmp/p1/shield
+		elif [[ $2 = health ]]; then
+			echo "$p1health" > ~/Library/shellspacetmp/p1/health
+		elif [[ $2 = laser ]]; then
+			echo "$p1laser" > ~/Library/shellspacetmp/p1/laser
+		else
+			echo "$p1laser" > ~/Library/shellspacetmp/p1/laser
+			echo "$p1x" > ~/Library/shellspacetmp/p1/x
+			echo "$p1health" > ~/Library/shellspacetmp/p1/health
+			echo "$p1shield" > ~/Library/shellspacetmp/p1/shield
+		fi
+	elif [[ $1 = local ]]; then
+		if [[ $2 = first ]]; then
+			echo "name $uname
+			xp 0
+			wea 1" | base64 > ~/Library/shellspace
+		elif [[ $2 = cheat ]]; then
+			echo "uname $uname
+			xp $xp
+			wea $weapon
+			cheater" | base64 > ~/Library/shellspace
+		else
+			echo "uname $uname
+			xp $xp
+			wea $weapon" | base64 > ~/Library/shellspace
+		fi
+	elif [[ $1 = ai ]]; then
+		if [[ $2 = nohealth ]]; then
+			echo "$ailaser" > ~/Library/shellspacetmp/ai/laser
+			echo "$aix" > ~/Library/shellspacetmp/ai/x
+			echo "$aishield" > ~/Library/shellspacetmp/ai/shield
+			echo "$aiweapon" > ~/Library/shellspacetmp/ai/weapon
+		elif [[ $2 = health ]]; then
+			echo "$aihealth" > ~/Library/shellspacetmp/ai/health
+		elif [[ $2 = laser ]]; then
+			echo "$ailaser" > ~/Library/shellspacetmp/ai/laser
+		else
+			echo "$ailaser" > ~/Library/shellspacetmp/ai/laser
+			echo "$aix" > ~/Library/shellspacetmp/ai/x
+			echo "$aihealth" > ~/Library/shellspacetmp/ai/health
+			echo "$aishield" > ~/Library/shellspacetmp/ai/shield
+			echo "$aiweapon" > ~/Library/shellspacetmp/ai/weapon
+		fi
+	fi
+}
+function load { p1dir="/Users/Shared/shellspaceserver/p1/"; p2dir="/Users/Shared/shellspaceserver/p2/"
+	if [[ $1 = p1 ]]; then
+		if [[ $2 = nohealth ]]; then
+			p1laser=$(cat ~/Library/shellspacetmp/p1/laser)
+			p1x=$(cat ~/Library/shellspacetmp/p1/x)
+			p1shield=$(cat ~/Library/shellspacetmp/p1/shield)
+		elif [[ $2 = health ]]; then
+			p1health=$(cat ~/Library/shellspacetmp/p1/health)
+		elif [[ $2 = local ]]; then echo
+			xp=$(cat ~/Library/shellspace | base64 -D | grep xp | awk '{print $2}')
+			weapon=$(cat ~/Library/shellspace | base64 -D | grep wea | awk '{print $2}')
+			uname=$(cat ~/Library/shellspace | base64 -D | grep uname | awk '{print $2}')
+		else
+			p1laser=$(cat ~/Library/shellspacetmp/p1/laser)
+			p1x=$(cat ~/Library/shellspacetmp/p1/x)
+			p1health=$(cat ~/Library/shellspacetmp/p1/health)
+			p1shield=$(cat ~/Library/shellspacetmp/p1/shield)
+		fi
+	elif [[ $1 = ai ]]; then
+		if [[ $2 = nohealth ]]; then
+			ailaser=$(cat ~/Library/shellspacetmp/ai/laser)
+			aix=$(cat ~/Library/shellspacetmp/ai/x)
+			aishield=$(cat ~/Library/shellspacetmp/ai/shield)
+			aiweapon=$(cat ~/Library/shellspacetmp/ai/weapon)
+		elif [[ $2 = health ]]; then
+			aihealth=$(cat ~/Library/shellspacetmp/ai/health)
+		else
+			ailaser=$(cat ~/Library/shellspacetmp/ai/laser)
+			aix=$(cat ~/Library/shellspacetmp/ai/x)
+			aihealth=$(cat ~/Library/shellspacetmp/ai/health)
+			aishield=$(cat ~/Library/shellspacetmp/ai/shield)
+			aiweapon=$(cat ~/Library/shellspacetmp/ai/weapon)
+		fi
+	fi
+}
+function first { 
+	echo "Please input your name"; read -p ">>> " uname
+	save local first
+	mkdir ~/Library/shellspacetmp ~/Library/shellspacetmp/p1 ~/Library/shellspacetmp/ai;
+}
+function mclear { 
+	m1=" "; m2=" "; m3=" "; m4=" "; m5=" "; m6=" "; m7=" "; m8=" "; m9=" "; m0=" ";
+	s1=" "; s2=" "; s3=" "; s4=" "; s5=" "; s6=" "; s7=" "; s8=" "; s9=" "; s10=" "; 
+}
+function console { exit=false; i=0; clear
+	until [[ $i -ge 100 ]]; do
+		echo "Loading / $ie"; sleep 0.05; clear; ((i=$i+$((RANDOM%20)))); ie="$i%"; if [[ $i -ge 100 ]]; then ie="Initializing"; fi
+		echo "Loading | $ie"; sleep 0.05; clear; ((i=$i+$((RANDOM%20)))); ie="$i%"; if [[ $i -ge 100 ]]; then ie="Initializing"; fi
+		echo Loading '\'" $ie"; sleep 0.05; clear; ((i=$i+$((RANDOM%20)))); ie="$i%"; if [[ $i -ge 100 ]]; then ie="Initializing"; fi
+		echo "Loading - $ie"; sleep 0.05; clear; ((i=$i+$((RANDOM%20)))); ie="$i%"; if [[ $i -ge 100 ]]; then ie="Initializing"; fi
+	done
+	echo "+---------------+"
+	echo "| CHEAT CONSOLE |"
+	echo "+---------------+"
+	until [[ $exit = true ]]; do
+		read -p "$uname@$(date "+%H:%M:%S") $ " com
+		if  [[ $(echo $com | awk '{print $1}') = write ]]; then
+			if [[ ! -z $(echo $com | awk '{print $2}') ]]; then
+				if [[ $(echo $com | awk '{print $2}') = xp ]]; then
+					if [[ ! -z $(echo $com | awk '{print $3}') ]]; then
+						if [[ -z $(echo $com | awk '{print $3}' | sed 's/[0-9]//g') ]]; then
+							xp=$(echo $com | awk '{print $3}')
+							save local cheat
+							echo 'Wrote var "xp' $xp'" to ~/Library/shellspace'
+						else
+							echo "$(echo $com | awk '{print $3}') needs to be a number"
+						fi
+					else
+						echo "-cheat: syntax error near $(echo $com | awk '{print $3}')"
+					fi
+				elif [[ $(echo $com | awk '{print $2}') = weapon ]]; then
+					if [[ ! -z $(echo $com | awk '{print $3}') ]]; then
+						if [[ -z $(echo $com | awk '{print $3}' | sed 's/[0-9]//g') ]]; then
+							weapon=$(echo $com | awk '{print $3}')
+							save local cheat
+							echo 'Wrote var "xp' $xp'" to ~/Library/shellspace'
+						else
+							echo "$(echo $com | awk '{print $3}') needs to be a number"
+						fi
+					else
+						echo "-cheat: syntax error near $(echo $com | awk '{print $3}')"
+					fi
+				else
+					echo "-cheat: syntax error near $(echo $com | awk '{print $2}')"
+				fi
+			else
+				echo "-cheat: syntax error near $(echo $com | awk '{print $1}')"
+			fi
+		elif [[ $com = exit ]]; then
+			exit=true
+		else
+			if [[ ! -z $(echo $com | awk '{print $1}') ]]; then
+				echo "-cheat: $com: command not found"
+			fi
+		fi
+	done
+}
+function menu { exit=false; load p1 local;
+	while [[ $exit = false ]]; do clear; nava=false
+		echo -e "Welcome $uname\n$m1 Join $m2 $m3 Offline $m4 $m5 Stats and Instructions $m6"
+		until [[ $nava = true ]]; do
+			read -s -n 1 nav
+			if [[ $nav = d ]]; then
+				if [[ $m1 = "[" ]]; then mclear; m3="["; m4="]"; nava=true
+				elif [[ $m3 = "[" ]]; then mclear; m5="["; m6="]"; nava=true
+				fi
+			elif [[ $nav = a ]]; then 
+				if [[ $m3 = "[" ]]; then mclear; m1="["; m2="]"; nava=true
+				elif [[ $m5 = "[" ]]; then mclear; m3="["; m4="]"; nava=true
+				fi
+			elif [[ -z $nav ]]; then
+				if [[ $m1 = "[" ]]; then sel=1; nava=true; exit=true
+				elif [[ $m3 = "[" ]]; then sel=2; nava=true; exit=true
+				elif [[ $m5 = "[" ]]; then sel=3; nava=true; exit=true
+				fi
+			elif [[ $nav = '`' ]]; then
+				console; nava=true
+			fi
+		done
+	done
+}
+function game {
+	if [[ $1 = 1 ]]; then
+		mode=online
+	elif [[ $1 = 2 ]]; then
+		mode=offline
+	elif [[ $1 = 3 ]]; then clear
+		echo "\/Statistics: $uname\/"; sleep 0.1
+		echo "Experience: $xp"; sleep 0.1
+		echo "Weapon: $weapon"; sleep 0.1
+		read -s -n 1 p
+		clear
+		echo "W and S to move up and down respectively"; sleep 0.1
+		echo "A and D to navigate the menu and spacebar to select"; sleep 0.1
+		echo "D to activate shield"; sleep 0.1
+		echo "Spacebar to shoot"; sleep 0.1
+		read -s -n 1 p
+	fi
+}
+function online { clear; 
+	echo "The Password is 63594"
+	ssh -t josiah.tickle0405@FHS-123632.local /Users/Shared/sss/client.sh client $uname $weapon $xp
+}
+function ai { load ai nohealth; load p1 nohealth; rvar=$((RANDOM%3))
+	if [[ $difficulty = 1 ]]; then
+		#fire
+		if [[ $((RANDOM%3)) = 1 ]]; then
+			if [[ $p1x = $aix ]]; then
+				if [[ $p1laser = 0 ]]; then 
+					ailaser=1
+				elif [[ $p1laser = 1 ]]; then
+					aishield=1
+				fi
+			fi
+		else
+			ailaser=0
+			aishield=0
+		fi
+		#move
+		if [[ $((RANDOM%2)) = 1 ]]; then
+			if [[ $p1x -gt $aix ]]; then
+				if [[ $rvar = 0 ]]; then
+					((aix=$aix-1))
+				else
+					((aix=$aix+1))
+				fi		
+			elif [[ $p1x -lt $aix ]]; then
+				if [[ $rvar = 0 ]]; then
+					((aix=$aix+1))
+				else
+					((aix=$aix-1))
+				fi			
+			fi
+			if [[ $aix -gt 5 ]]; then aix=5; fi
+			if [[ $aix -lt 1 ]]; then aix=1; fi
+		fi
+		save ai nohealth; save ailaser; sleep 0.$((RANDOM%3 + 1))
+	elif [[ $difficulty = 2 ]]; then
+		#fire
+		if [[ $((RANDOM%3)) = 1 ]]; then
+			if [[ $p1x = $(($aix+1)) ]] || [[ $p1x = $(($aix-1)) ]] || [[ $p1x = $aix ]]; then
+				if [[ $p1laser = 0 ]]; then 
+					ailaser=1
+				elif [[ $p1laser = 1 ]]; then
+					if [[ $((RANDOM%2)) = 1 ]]; then
+						aishield=1
+					fi
+				fi
+			fi
+		fi
+		#move
+		if [[ $((RANDOM%2)) = 1 ]]; then
+			if [[ $p1x -gt $aix ]]; then rvar=$((RANDOM%6))
+				if [[ $rvar = 0 ]]; then
+					((aix=$aix-1))
+				else
+					((aix=$aix+1))
+				fi
+			elif [[ $p1x -lt $aix ]]; then rvar=$((RANDOM%6))
+				if [[ $rvar = 0 ]]; then
+					((aix=$aix+1))
+				else
+					((aix=$aix-1))
+				fi		
+			fi
+		fi
+		save ai nohealth; save ailaser; sleep 0.$((RANDOM%3 + 1))
+	fi
+}
+function laser { load ai; load p1;
+	if [[ $1 = p1 ]]; then
+		if [[ $m1 = ">" ]]; then 
+			if [[ $weapon = 1 ]]; then 
+				l1="-"; 
+				if [[ $aishield = 0 ]]; then
+					if [[ $m6 = "<" ]]; then ((aihealth=$aihealth-$((RANDOM%8)))); fi
+				fi
+			elif [[ $weapon = 2 ]]; 
+				then l1="-"; l2="-"; 
+				if [[ $aishield = 0 ]]; then
+					if [[ $m6 = "<" ]] || [[ $m7 = "<" ]]; then ((aihealth=$aihealth-$((RANDOM%8+1)))); fi
+				fi
+			fi 
+			p1laser=0; save p1 laser; save ai health
+		elif [[ $m2 = ">" ]]; then 
+			if [[ $weapon = 1 ]]; then 
+				l2="-"; 
+				if [[ $aishield = 0 ]]; then
+					if [[ $m7 = "<" ]]; then ((aihealth=$aihealth-$((RANDOM%8)))); fi
+				fi
+			elif [[ $weapon = 2 ]]; then 
+				l1="-"; l2="-"; l3="-"; 
+				if [[ $aishield = 0 ]]; then
+					if [[ $m6 = "<" ]] || [[ $m7 = "<" ]] || [[ $m8 = "<" ]]; then ((aihealth=$aihealth-$((RANDOM%8+1)))); fi
+				fi
+			fi
+			p1laser=0; save p1 laser; save ai health
+		elif [[ $m3 = ">" ]]; then 
+			if [[ $weapon = 1 ]]; then 
+				l3="-"; 
+				if [[ $aishield = 0 ]]; then
+					if [[ $m8 = "<" ]]; then ((aihealth=$aihealth-$((RANDOM%8)))); fi
+				fi
+			elif [[ $weapon = 2 ]]; then 
+				l2="-"; l3="-"; l4="-"; 
+				if [[ $aishield = 0 ]]; then
+					if [[ $m7 = "<" ]] || [[ $m8 = "<" ]] || [[ $m9 = "<" ]]; then ((aihealth=$aihealth-$((RANDOM%8+1)))); fi
+				fi
+			fi
+			p1laser=0; save p1 laser; save ai health
+		elif [[ $m4 = ">" ]]; then 
+			if [[ $weapon = 1 ]]; then 
+				l4="-"; 
+				if [[ $aishield = 0 ]]; then
+					if [[ $m9 = "<" ]]; then ((aihealth=$aihealth-$((RANDOM%8)))); fi
+				fi
+			elif [[ $weapon = 2 ]]; then 
+				l3="-"; l4="-"; l5="-"; 
+				if [[ $aishield = 0 ]]; then
+					if [[ $m8 = "<" ]] || [[ $m9 = "<" ]] || [[ $m10 = "<" ]]; then ((aihealth=$aihealth-$((RANDOM%8+1)))); fi
+				fi
+			fi
+			p1laser=0; save p1 laser; save ai health
+		elif [[ $m5 = ">" ]]; then 
+			if [[ $weapon = 1 ]]; then 
+				l5="-"; 
+				if [[ $aishield = 0 ]]; then
+					if [[ $m10 = "<" ]]; then ((aihealth=$aihealth-$((RANDOM%8)))); fi
+				fi
+			elif [[ $weapon = 2 ]]; then 
+				l4="-"; l5="-";
+				if [[ $aishield = 0 ]]; then
+					if  [[ $m9 = "<" ]] || [[ $m10 = "<" ]]; then ((aihealth=$aihealth-$((RANDOM%8+1)))); fi
+				fi
+			fi
+			p1laser=0; save p1 laser; save ai health
+		fi
+	elif [[ $1 = ai ]]; then
+		if [[ $m6 = "<" ]]; then 
+			if [[ $aiweapon = 1 ]]; then 
+				l1="+"; 
+				if [[ $p1shield = 0 ]];then 
+					if [[ $m1 = ">" ]]; then ((p1health=$p1health-$((RANDOM%8)))); fi
+				fi
+			elif [[ $aiweapon = 2 ]]; then 
+				l1="+"; l2="+"; 
+				if [[ $p1shield = 0 ]];then 
+					if [[ $m1 = ">" ]] || [[ $m2 = ">" ]]; then ((p1health=$p1health-$((RANDOM%8)))); fi
+				fi
+			fi 
+			ailaser=0; save a1 laser; save p1 health;
+		elif [[ $m7 = "<" ]]; then 
+			if [[ $aiweapon = 1 ]]; then 
+				l2="+"; 
+				if [[ $p1shield = 0 ]];then 
+					if [[ $m2 = ">" ]]; then ((p1health=$p1health-$((RANDOM%8)))); fi
+				fi
+			elif [[ $aiweapon = 2 ]]; then 
+				l1="+"; l2="+"; l3="+"; 
+				if [[ $p1shield = 0 ]];then 
+					if [[ $m1 = ">" ]] || [[ $m2 = ">" ]] || [[ $m3 = ">" ]]; then ((p1health=$p1health-$((RANDOM%8)))); fi
+				fi
+			fi
+			ailaser=0; save a1 laser; save p1 health;
+		elif [[ $m8 = "<" ]]; then
+			if [[ $aiweapon = 1 ]]; then 
+				l3="+"; 
+				if [[ $p1shield = 0 ]];then 
+					if [[ $m3 = ">" ]]; then ((p1health=$p1health-$((RANDOM%8)))); fi
+				fi
+			elif [[ $aiweapon = 2 ]]; then 
+				l2="+"; l3="+"; l4="+"; 
+				if [[ $p1shield = 0 ]];then 
+					if [[ $m2 = ">" ]] || [[ $m3 = ">" ]] || [[ $m4 = ">" ]]; then ((p1health=$p1health-$((RANDOM%8)))); fi
+				fi
+			fi
+			ailaser=0; save a1 laser; save p1 health;
+		elif [[ $m9 = "<" ]]; then
+			if [[ $aiweapon = 1 ]]; then 
+				l4="+"; 
+				if [[ $p1shield = 0 ]];then 
+					if [[ $m4 = ">" ]]; then ((p1health=$p1health-$((RANDOM%8)))); fi
+				fi
+			elif [[ $aiweapon = 2 ]]; then 
+				l3="+"; l4="+"; l5="+"; 
+				if [[ $p1shield = 0 ]];then 
+					if [[ $m3 = ">" ]] || [[ $m4 = ">" ]] || [[ $m5 = ">" ]]; then ((p1health=$p1health-$((RANDOM%8)))); fi
+				fi
+			fi
+			ailaser=0; save a1 laser; save p1 health;
+		elif [[ $m0 = "<" ]]; then
+			if [[ $aiweapon = 1 ]]; then 
+				l5="+"; 
+				if [[ $p1shield = 0 ]];then 
+					if [[ $m5 = ">" ]]; then ((p1health=$p1health-$((RANDOM%8)))); fi 
+				fi
+			elif [[ $aiweapon = 2 ]]; then 
+				l4="+"; l5="+"; 
+				if [[ $p1shield = 0 ]];then
+					if [[ $m4 = ">" ]] || [[ $m5 = ">" ]]; then ((p1health=$p1health-$((RANDOM%8)))); fi 
+				fi
+			fi
+			ailaser=0; save a1 laser; save p1 health;
+		fi
+	fi
+}
+function shield {
+	if [[ $1 = p1 ]]; then
+		if [[ $m1 = ">" ]]; then 
+			s1="]"
+		elif [[ $m2 = ">" ]]; then 
+			s2="]"
+		elif [[ $m3 = ">" ]]; then 
+			s3="]"
+		elif [[ $m4 = ">" ]]; then 
+			s4="]"
+		elif [[ $m5 = ">" ]]; then 
+			s5="]"
+		fi
+	elif [[ $1 = ai ]]; then
+		if [[ $m6 = "<" ]]; then 
+			s6="["
+		elif [[ $m7 = "<" ]]; then 
+			s7="["
+		elif [[ $m8 = "<" ]]; then
+			s8="["
+		elif [[ $m9 = "<" ]]; then
+			s9="["
+		elif [[ $m0 = "<" ]]; then
+			s10="["
+		fi
+	fi
+}
+function display { load ai; load p1; mclear
+	l1=" "; l2=" "; l3=" "; l4=" "; l5=" "
+	if [[ $p1x = 1 ]]; then 
+		m1=">"; 
+	elif [[ $p1x = 2 ]]; then 
+		m2=">";
+	elif [[ $p1x = 3 ]]; then
+		m3=">";
+	elif [[ $p1x = 4 ]]; then
+		m4=">";
+	elif [[ $p1x = 5 ]]; then
+		m5=">";
+	fi
+	if [[ $aix = 1 ]]; then 
+		m6="<"; 
+	elif [[ $aix = 2 ]]; then 
+		m7="<";
+	elif [[ $aix = 3 ]]; then
+		m8="<";
+	elif [[ $aix = 4 ]]; then
+		m9="<";
+	elif [[ $aix = 5 ]]; then
+		m0="<";
+	fi
+	if [[ $p1shield = 1 ]]; then
+		shield p1; p1laser=0
+	elif [[ $p1laser = 1 ]]; then
+		laser p1; p1laser=0
+	fi
+	if [[ $aishield = 1 ]]; then
+		shield ai; aishield=0
+	elif [[ $ailaser = 1 ]]; then
+		laser ai; ailaser=0
+	fi
+	if [[ $p1health -lt 1 ]] && [[ $aihealth -lt 1 ]]; then
+		p1health=0; aihealth=0; win=2
+	elif [[ $p1health -lt 1 ]]; then 
+		p1health=0; win=0
+	elif [[ $aihealth -lt 1 ]]; then
+		aihealth=0; win=1
+	fi
+	echo -e "$m1" "$s1" "$l1" "$l1" "$l1" "$l1" "$l1" "$s6" "$m6 $uname: $p1health%"
+	echo -e "$m2" "$s2" "$l2" "$l2" "$l2" "$l2" "$l2" "$s7" "$m7 Ai: $aihealth%"
+	echo -e "$m3" "$s3" "$l3" "$l3" "$l3" "$l3" "$l3" "$s8" "$m8"
+	echo -e "$m4" "$s4" "$l4" "$l4" "$l4" "$l4" "$l4" "$s9" "$m9"
+	echo -e "$m5" "$s5" "$l5" "$l5" "$l5" "$l5" "$l5" "$s10" "$m0"
+	if [[ $win = 0 ]]; then clear
+		echo "You Lose, lost 1000 xp"; echo "1" > ~/Library/shellspacetmp/exit; sleep 1
+		((xp=$xp-1000)); if [[ $xp -ge 100000 ]]; then weapon=2; else weapon=1; fi; save local; sleep 1
+	elif [[ $win = 1 ]]; then clear
+		echo "You Win, gained 1000 xp"; echo "1" > ~/Library/shellspacetmp/exit; sleep 1
+		((xp=$xp+1000)); if [[ $xp -ge 100000 ]]; then weapon=2; else weapon=1; fi; save local; sleep 1
+	elif [[ $win = 2 ]]; then clear
+		echo "Tie"; echo "1" > ~/Library/shellspacetmp/exit; sleep 1
+	fi
+}
+function offline { clear; p1health=100; p1x=1; p1laser=0; p1shield=0; aix=1; ailaser=0; aihealth=100; aishield=0;
+ 	save p1; save ai 
+	exit=false; echo "0" > ~/Library/shellspacetmp/exit
+	if [[ $xp -gt 100000 ]]; then
+		difficulty=2
+		aiweapon=2
+		echo 2 > ~/Library/shellspacetmp/ai/difficulty
+		echo 2 > ~/Library/shellspacetmp/ai/weapon
+	else
+		difficulty=1
+		aiweapon=1
+		echo 1 > ~/Library/shellspacetmp/ai/weapon
+		echo 1 > ~/Library/shellspacetmp/ai/difficulty
+	fi
+	echo $difficulty
+	clear; echo "Starting in 3..."; sleep 1; echo "            2..."; sleep 1; echo "            1..."; sleep 1;
+	while [[ $exit = false ]]; do
+		while [[ $(cat ~/Library/shellspacetmp/exit) = 0 ]]; do
+			ai
+		done&
+		while [[ $(cat ~/Library/shellspacetmp/exit) = 0 ]]; do clear
+			display; sleep 0.08
+		done&
+		while [[  $(cat ~/Library/shellspacetmp/exit) = 0 ]]; do
+			read -s -n 1 mv
+			if [[ $mv = s ]]; then
+				((p1x=$p1x+1)); if [[ $p1x -gt 5 ]]; then p1x=5; fi; laser=0; save p1 nohealth
+			elif [[ $mv = w ]]; then
+				((p1x=$p1x-1)); if [[ $p1x -lt 1 ]]; then p1x=1; fi; laser=0; save p1 nohealth
+			elif [[ $mv = d ]]; then
+				p1shield=1; save p1 nohealth; p1shield=0
+			elif [[ -z $mv ]]; then
+				p1laser=1; save p1 nohealth; p1laser=0
+			fi
+		done
+		if [[ $(cat ~/Library/shellspacetmp/exit) = 1 ]]; then 
+			exit=true; 
+		fi
+		rm ~/Library/shellspacetmp/ai/* ~/Library/shellspacetmp/p1/* ~/Library/shellspacetmp/exit
+	done
+}
+#####################################################################################################################################################
+mclear; m1="["; m2="]"; run=true;
+if [[ ! -f ~/Library/shellspace ]]; then first; fi
+while [[ $run = true ]]; do
+	menu
+	game $sel
+	if [[ $mode = online ]] || [[ $mode = offline ]]; then $mode; fi
+done

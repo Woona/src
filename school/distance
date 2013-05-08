@@ -1,0 +1,41 @@
+#!/bin/bash
+yy=y; xx=x; x=0
+function clear_ {
+	y1x0="+"; y2x0=" "; y3x0=" "; y4x0=" "; y5x0=" "; y6x0=" "; y7x0=" "; y8x0=" "; y9x0=" "; y10x0=" "; y11x0=" "
+}
+function disp_ {
+	echo ""
+	echo ""
+	echo "                        $y11x0        "
+	echo "                        $y10x0        "
+	echo "                        $y9x0        "
+	echo "                        $y8x0         "
+	echo "                        $y7x0         "
+	echo "                        $y6x0         "
+	echo "                        $y5x0        "
+	echo "                        $y4x0        "
+	echo "                        $y3x0        "
+	echo "                        $y2x0        "
+	echo "                        $y1x0        "
+}
+function round_ {
+	x=$(echo $x | sed 's/[-]/n/g;s/[.]/ /g' | awk '{print $1}')
+	y=$(echo $y | sed 's/[-]/n/g;s/[.]/ /g' | awk '{print $1}')
+	((y=$y/10))
+}
+function plot_ {
+	vname=$yy$y$xx$x
+	eval ${vname}="*-$ys"
+}
+c=0; bssid=loading...
+while true; do clear
+	y=$(/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport /usr/sbin/airport -I | grep "agrCtlRSSI:" | awk '{print $2}' | sed 's/[-]//g'); ys=$y
+	clear_
+	round_
+	plot_
+	disp_
+	echo -e "        bssid = $bssid"
+	((c=$c+1))
+	if [[ $c = 3 ]]; then bssid=$(/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport /usr/sbin/airport -I | grep "BSSID" | awk '{print $2}'); c=0; fi
+	sleep 0.3
+done

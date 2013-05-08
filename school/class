@@ -1,0 +1,173 @@
+#!/bin/bash
+debug=false; sday=false; repeat=true; disp=false
+function calc {
+	read -p "Hour:" hour
+	read -p "minutes:" minute
+	awk "BEGIN {print $hour*60+$minute}"
+	exit
+}
+function graph { 
+	g1="_"; g2="_"; g3="_"; g4="_"; g5="_"; g6="_"; g7="_"; g8="_"; g9="_"; g10="_"; g11="_"; g12="_"; g13="_"; g14="_"; g15="_"; g16="_"; g17="_"; g18="_"; g19="_"; g20="_";
+	if [[ $1 -ge 100 ]]; then
+		g1="*"; g2="*"; g3="*"; g4="*"; g5="*"; g6="*"; g7="*"; g8="*"; g9="*"; g10="*"; g11="*"; g12="*"; g13="*"; g14="*"; g15="*"; g16="*"; g17="*"; g18="*"; g19="*"; g20="*";
+	elif [[ $1 -ge 95 ]]; then
+		g1="*"; g2="*"; g3="*"; g4="*"; g5="*"; g6="*"; g7="*"; g8="*"; g9="*"; g10="*"; g11="*"; g12="*"; g13="*"; g14="*"; g15="*"; g16="*"; g17="*"; g18="*"; g19="*";
+	elif [[ $1 -ge 90 ]]; then
+		g1="*"; g2="*"; g3="*"; g4="*"; g5="*"; g6="*"; g7="*"; g8="*"; g9="*"; g10="*"; g11="*"; g12="*"; g13="*"; g14="*"; g15="*"; g16="*"; g17="*"; g18="*";
+	elif [[ $1 -ge 85 ]]; then
+		g1="*"; g2="*"; g3="*"; g4="*"; g5="*"; g6="*"; g7="*"; g8="*"; g9="*"; g10="*"; g11="*"; g12="*"; g13="*"; g14="*"; g15="*"; g16="*"; g17="*";
+	elif [[ $1 -ge 80 ]]; then
+		g1="*"; g2="*"; g3="*"; g4="*"; g5="*"; g6="*"; g7="*"; g8="*"; g9="*"; g10="*"; g11="*"; g12="*"; g13="*"; g14="*"; g15="*"; g16="*";
+	elif [[ $1 -ge 75 ]]; then
+		g1="*"; g2="*"; g3="*"; g4="*"; g5="*"; g6="*"; g7="*"; g8="*"; g9="*"; g10="*"; g11="*"; g12="*"; g13="*"; g14="*"; g15="*";
+	elif [[ $1 -ge 70 ]]; then
+		g1="*"; g2="*"; g3="*"; g4="*"; g5="*"; g6="*"; g7="*"; g8="*"; g9="*"; g10="*"; g11="*"; g12="*"; g13="*"; g14="*";
+	elif [[ $1 -ge 65 ]]; then
+		g1="*"; g2="*"; g3="*"; g4="*"; g5="*"; g6="*"; g7="*"; g8="*"; g9="*"; g10="*"; g11="*"; g12="*"; g13="*";
+	elif [[ $1 -ge 60 ]]; then
+		g1="*"; g2="*"; g3="*"; g4="*"; g5="*"; g6="*"; g7="*"; g8="*"; g9="*"; g10="*"; g11="*"; g12="*";
+	elif [[ $1 -ge 55 ]]; then
+		g1="*"; g2="*"; g3="*"; g4="*"; g5="*"; g6="*"; g7="*"; g8="*"; g9="*"; g10="*"; g11="*";
+	elif [[ $1 -ge 50 ]]; then
+		g1="*"; g2="*"; g3="*"; g4="*"; g5="*"; g6="*"; g7="*"; g8="*"; g9="*"; g10="*";
+	elif [[ $1 -ge 45 ]]; then
+		g1="*"; g2="*"; g3="*"; g4="*"; g5="*"; g6="*"; g7="*"; g8="*"; g9="*";
+	elif [[ $1 -ge 40 ]]; then
+		g1="*"; g2="*"; g3="*"; g4="*"; g5="*"; g6="*"; g7="*"; g8="*";
+	elif [[ $1 -ge 35 ]]; then
+		g1="*"; g2="*"; g3="*"; g4="*"; g5="*"; g6="*"; g7="*";
+	elif [[ $1 -ge 30 ]]; then
+		g1="*"; g2="*"; g3="*"; g4="*"; g5="*"; g6="*";
+	elif [[ $1 -ge 25 ]]; then
+		g1="*"; g2="*"; g3="*"; g4="*"; g5="*";
+	elif [[ $1 -ge 20 ]]; then
+		g1="*"; g2="*"; g3="*"; g4="*";
+	elif [[ $1 -ge 15 ]]; then
+		g1="*"; g2="*"; g3="*";
+	elif [[ $1 -ge 10 ]]; then
+		g1="*"; g2="*";
+	elif [[ $1 -ge  5 ]]; then
+		g1="*";
+	fi
+	graph=$(echo "[$g1$g2$g3$g4$g5$g6$g7$g8$g9$g10$g11$g12$g13$g14$g15$g16$g17$g18$g19$g20]")
+}
+function percent { 
+	((percent=$1*100))
+	((percent=$percent/$2))
+	ptd=$(echo $percent"%")
+}
+function remain { 
+	let rem=$pe-$hadd
+	rem=$(echo $rem minutes remaining)
+}
+function current {
+	seconds=$(awk "BEGIN {print 60-$(date "+%-S")}")
+	minutes=$(awk "BEGIN {print "$(let date=$(date "+%-H")*60 && echo $date)"+"$(date "+%-M")"}")
+	days=$(awk "BEGIN {print $(date "+%-j")-1}")
+}
+function blockk {
+	if [[ $minutes -ge 467 ]] && [[ $minutes -le 472 ]]; then
+		block=-1; bstart=467; btime=5; bdisplay="Time till transition to first block"
+	elif [[ $minutes -ge 472 ]] && [[ $minutes -le 475 ]]; then
+		block=0; bstart=472; btime=3; bdisplay="Time till announcements"
+	elif [[ $minutes -ge 475 ]] && [[ $minutes -le 480 ]]; then
+		block=z5; bstart=475; btime=5; bdisplay="Time till first block"
+	elif [[ $minutes -ge 480 ]] && [[ $minutes -le 572 ]]; then
+		block=1; bstart=480; btime=92; bdisplay="Time till transition to second block"
+	elif [[ $minutes -ge 572 ]] && [[ $minutes -le 577 ]]; then
+		block=15; bstart=572; btime=5; bdisplay="Time till second block"
+	elif [[ $minutes -ge 577 ]] && [[ $minutes -le 669 ]]; then
+		block=2; bstart=577; btime=92; bdisplay="Time till third block and lunch"
+	elif [[ $minutes -ge 669 ]] && [[ $minutes -le 796 ]]; then
+		block=3; bstart=669; btime=127; bdisplay="Time till transition to fourth block"
+	elif [[ $minutes -ge 796 ]] && [[ $minutes -le 801 ]]; then
+		block=35; bstart=796; btime=5; bdisplay="Time till fourth block"
+	elif [[ $minutes -ge 801 ]] && [[ $minutes -le 893 ]]; then
+		block=4; bstart=801; btime=92; bdisplay="Time till school ends"
+	elif [[ $minutes -ge 893 ]] || [[ $minutes -le 467 ]]; then
+		block=5; bstart=893; btime=1014; bdisplay="Time till doors open"
+		if [[ $minutes -le 467 ]]; then
+			minutes=$(($minutes+1440))
+		fi
+	fi
+}
+function resolve {
+	if [[ -n $(echo $* | sed 's/[A-Z,a-z]//g') ]]; then
+		btime=$1; bstart=$2
+		if [[ $* = *"scientific"* ]]; then
+			s=scientific
+		else
+			s=nope
+		fi
+	else
+		if [[ $1 = scientific ]]; then
+			s=scientific
+		else
+			s=nope
+		fi
+	fi
+	if [[ $s = scientific ]]; then
+		rminutes=$(awk "BEGIN {print $btime-($(awk "BEGIN {print $minutes-$bstart}"))}")
+		rhours=$(awk "BEGIN {print $rminutes/60}") #rminutes=$(awk "BEGIN {print $rminutes-$(awk "BEGIN {print $rhours*60}")}")
+		rdays=$(awk "BEGIN {print $rhours/24}") #rhours=$(awk "BEGIN {print $rhours-$(awk "BEGIN {print $rdays*24}")}")
+		rweeks=$(awk "BEGIN {print $rdays/7}")
+		ryears=$(awk "BEGIN {print $rdays/365.242}") #rdays=$(awk "BEGIN {print $rdays-$(awk "BEGIN {print $ryears*365.242}")}")
+		sep=" total or,"
+	else
+		rminutes=$(($btime-$(($minutes-$bstart))))
+		rhours=$(($rminutes/60)); rminutes=$(($rminutes-$(($rhours*60))))
+		rdays=$(($rhours/24)); rhours=$(($rhours-$(($rdays*24))))
+		rweeks=$(($rdays/7)); rdays=$(($rdays-$((rweeks*7))))
+		ryears=$(($rdays/365)); rdays=$(($rdays-$(($ryears/365))))
+		sep=","
+	fi
+}
+while [[ -n $* ]]; do 
+	if [[ $1 = scientific ]] || [[ $1 = science ]] || [[ $1 = "s" ]]; then
+		science=scientific; shift; usage=false
+	elif [[ $1 = calc ]] || [[ $1 = "c" ]]; then
+		calc; shift; usage=false
+	elif [[ $1 = debug ]] || [[ $1 = "d" ]]; then
+		debug=true; shift; usage=false
+	elif [[ $1 = *year ]] || [[ $1 = "y" ]]; then
+		year=true; shift; usage=false
+	elif [[ $1 = "-dyc" ]]; then
+		science=scientific; debug=true; year=true; shift
+	elif [[ $1 = "-day" ]]; then
+		sday=true; shift
+	elif [[ $1 = e ]]; then
+		disp=true; shift
+	else
+		usage=true; shift
+	fi
+done
+while [[ $repeat = true ]]; do
+	if [[ $disp = true ]]; then
+		clear
+	fi
+	if [[ $usage = true ]]; then
+		echo "Usage [ class -year -debug -calc -scientific -day ]"; exit
+	fi
+	current; blockk; percent $(($minutes-$bstart)) $btime; graph $percent; resolve $science
+	echo "$bdisplay: $ryears years$sep $rweeks weeks$sep $rdays days$sep $rhours hours$sep $rminutes minutes, and $seconds seconds, $ptd complete, $(($minutes-$bstart)) minutes gone by so far"
+	echo $graph
+	if [[ "$block" -ne '5' ]]; then
+		percent $(($minutes-467)) 426; graph $percent; resolve 467 426 $science
+		echo "Time till school day ends: $ryears years$sep $rdays days$sep $rhours hours$sep $rminutes minutes, and $seconds seconds, $ptd complete, $((minutes-467)) minutes gone by so far"
+		echo $graph
+	fi
+	if [[ $year = true ]]; then
+		minutes=$(($days*1440+191520+$minutes))
+		percent $(($minutes-0)) 399773; graph $percent; resolve 0 399773 $science
+		echo "Time till school year ends: $ryears years$sep $rweeks weeks$sep $rdays days$sep $rhours hours$sep $rminutes minutes, and $seconds seconds, $ptd complete"
+		echo $graph
+	fi
+	if [[ $debug = true ]]; then
+		echo "in about $SECONDS seconds"
+	fi
+	if [[ $disp = false ]]; then
+		repeat=false
+	else
+		sleep 1
+	fi
+done

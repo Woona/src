@@ -1,0 +1,139 @@
+#!/bin/bash
+f=0; out="/Users/$(whoami)/Desktop/BSSID.txt"
+	while [[ ${1:0:1} = '-' ]]; do
+	N=1; L=${#1}
+		while [[ $N -lt $L ]]; do
+			case ${1:$N:1} in
+			'f') f=1 ;;
+			'o') if [[ $N -ne $(($L-1)) || ! -n ${2} ]] ; then
+			echo "Usage [ -f dont show size warning on startup ][ -o output file ]"
+			exit 1
+			fi
+			out=${2}
+			shift ;;
+			*) echo "Usage [ -f dont show size warning on startup ]"
+			exit 1 ;;
+			esac
+			N=$(($N+1))
+		done
+	shift
+	done
+if [ $f = 0 ]
+then
+mex=false
+LL=`stty -a | grep rows | sed 's/^.*;\(.*\)rows\(.*\);.*$/\1\2/' | sed 's/;.*$//' | sed 's/[^0-9]//g'`
+LC=`stty -a | grep columns | sed 's/^.*;\(.*\)columns\(.*\);.*$/\1\2/' | sed 's/;.*$//' | sed 's/[^0-9]//g'`
+if [[ $LC -gt 80 ]] || [[ $LL -gt 24 ]]
+then
+clear
+echo bssid helper looks better in a 80X24 window
+echo continue'? (y/n)'
+	until [ $mex = true ]
+	do
+	try=true
+	read -s -n 1 yn
+		if [ $(echo $yn"a") = a ]
+		then try=false
+		fi
+		if [ $try = true ]
+		then
+			if [[ $yn = y ]] || [[ $yn = Y ]]
+			then
+			mex=true
+			elif [[ $yn = N ]] || [[ $yn = n ]]
+			then
+			echo "Exiting"
+			exit
+			else
+			echo please input a y or n
+			fi
+		fi
+	done
+fi
+fi
+until [ -f "$out" ]
+do
+touch ~/Desktop/BSSID.txt
+echo -e "Location \t\t>\tBSSID" >> "$out"
+echo "+-----------------------------------------------+" >> "$out"
+done
+date=$(date)
+echo "" >> "$out"
+echo "+         $date          +" >> "$out"
+echo "" >> "$out"
+cont=true; while [ $cont = true ]
+do
+n=2; ex=false; record=true
+bssid_old=$(cat ~/.bssid_old)
+bssid1=$(/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport /usr/sbin/airport -I | grep "BSSID*" | awk '{print $2}')
+if [ $bssid1 = "0:0:0:0:0:0" ]; then bssid1="Offline         "; bssid_old="Offline         "; fi
+echo $bssid1 > ~/.bssid_old
+clear
+echo '+-----/|\------+---------------------------+----------------------------------+'
+echo "|BSSID_|_Helper| current: $bssid1 | enter a location to capture your |"
+echo '+-----\|/------+---------------------------+                                  +'
+echo "|   ☜v3.0☞     | last   : $bssid_old | current bssid.                   |"
+echo '+--------------|---------------------------+----------------------------------+'
+echo "|Output File:  | $out"
+echo "|"Recent locations':'
+echo $rec15
+echo $rec14
+echo $rec13
+echo $rec12
+echo $rec11
+echo $rec10
+echo $rec9
+echo $rec8
+echo $rec7
+echo $rec6
+echo $rec5
+echo $rec4
+echo $rec3
+echo $rec2
+echo $rec1
+read -p 'Location:' i
+if [ "$(echo $i"a" )" = a ]
+then
+record=false; networksetup -setairportpower en0 off; networksetup -setairportpower en0 on; 
+fi
+if [ $record = true ]
+then
+i=$i'_1'
+until [ $ex = true ]
+do
+if [ $(cat "$out" | grep "$i" >> ~/.Trash/.delete && echo t || echo f ) = t ]
+then
+i=$(echo $i | sed s/[_,0-9]//g)'_'$n
+((n=$n+1))
+else
+ex=true
+fi
+done
+number=$(grep -o "[a-s|S-S|0-9|_| ]" <<<"$i" | wc -l)
+if [ $number -lt 7 ]
+then
+BSSID="$(/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport /usr/sbin/airport -I | grep "BSSID*" | sed 's/:/%/g' | awk '{print $2}')"; echo -e "$i \t\t\t>\t$BSSID" >> "$out"
+elif [ $number -lt 16 ]
+then
+BSSID="$(/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport /usr/sbin/airport -I | grep "BSSID*" | sed 's/:/%/g' | awk '{print $2}')"; echo -e "$i \t\t>\t$BSSID" >> "$out"
+elif [ $number -lt 24 ]
+then
+BSSID="$(/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport /usr/sbin/airport -I | grep "BSSID*" | sed 's/:/%/g' | awk '{print $2}')"; echo -e "$i \t>\t$BSSID" >> "$out"
+fi
+rec15=$rec14
+rec14=$rec13
+rec13=$rec12
+rec12=$rec11
+rec11=$rec10
+rec10=$rec9
+rec9=$rec8
+rec8=$rec7
+rec7=$rec6
+rec6=$rec5
+rec5=$rec4
+rec4=$rec3
+rec3=$rec2
+rec2=$rec1
+rec1=$i
+fi
+done

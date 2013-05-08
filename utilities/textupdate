@@ -1,0 +1,12 @@
+#!/bin/bash
+# Tupdate (c) 2013
+ex1=0; wdir="`dirname \"$0\"`"; c=1;
+until [[ $ex1 = 1 ]]; do
+read -p "Drag in file > " file
+	if [[ $(echo $file"a") = a ]] || [[ ! -f $file ]]; then 
+	echo No such file "$file"
+	else
+	ex1=1
+	fi
+done
+while true; do clear; cat "$file"; sleep 1; done

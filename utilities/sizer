@@ -1,0 +1,10 @@
+#!/bin/bash
+function recurse {
+	find ~/ | while read i; do
+		if [[ ! -d $i ]]; then
+			((ta=$(ls -l "$i" | awk '{print $5}')+$ta))
+		fi
+		clear; echo "Total File Size= $ta
+	done
+}
+ta=0; recurse

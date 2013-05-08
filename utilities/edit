@@ -1,0 +1,29 @@
+#!/bin/bash
+while [[ ${1:0:1} = '-' ]]; do
+	N=1; L=${#1}
+		while [[ $N -lt $L ]]; do
+			case ${1:$N:1} in
+			'f') if [[ $N -ne $(($L-1)) || ! -n ${2} ]] ; then
+			echo "Usage [ -f <file to edit> ]"
+			exit 1
+			fi
+			file=${2}
+			shift ;;
+			*) echo "Usage [ -f <file to edit> ]"
+			ls ~/.bin/
+			exit 1 ;;
+			esac
+			N=$(($N+1))
+		done
+	shift
+	done
+if [ $(echo $file"a") = a ]; then 
+	echo "Error, no file specified, use -f to specify a file"; ls ~/.bin/; 
+elif [ -f ~/.bin/$file ]; then 
+	mv ~/.bin/$file ~/.bin/$file.txt
+	open -a TaSubTex.app ~/.bin/$file.txt
+	sleep 0.09
+	mv ~/.bin/$file.txt ~/.bin/$file
+else
+	echo Error"," file could not be found
+fi

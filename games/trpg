@@ -1,0 +1,351 @@
+#!/bin/bash
+wdir="`dirname \"$0\"`"; menuexit=false; mvara="*"; mvarb=" "
+function shop { shopexit=false; shopsella="["; shopsellb="]"; shopsellc=" "; shopselld=" "; shopselle=" "; shopsellf=" "; shopbuysellexit=false; itema=0; itemb=0
+until [[ $itema -gt 0 ]]; do itema=$((RANDOM%3)); done
+until [[ $itemb -gt 0 ]] && [[ $itemb != $itema ]]; do itemb=$((RANDOM%3)); done
+until [[ $shopexit = true ]]; do clear
+	hud; echo -e "$hud"; echo -e "$shopsella Buy $shopsellb $shopsellc Sell $shopselld"
+	read -s -n 1 shopbuysell
+	if [[ $shopbuysell = a ]]; then shopsella="["; shopsellb="]"; shopsellc=" "; shopselld=" ";
+	elif [[ $shopbuysell = d ]]; then shopsella=" "; shopsellb=" "; shopsellc="["; shopselld="]";
+	elif [[ $(echo $shopbuysell"a") = a ]]; then
+		if [[ $shopsella = "[" ]]; then
+			shopbuy=false; charweap=$itema; charweaponame; itemadisp=$(echo "$charweaponame") itemacost=$weaponval; charweap=$itemb; charweaponame; itembdisp=$(echo "$charweaponame"); itembcost=$weaponval
+			until [[ $shopbuy = true ]]; do clear
+				echo "\ $money Gold /\ x$healthpotions Potions/\ Weapon: $weaponame /"
+				echo "$shopsella $itemadisp $itemacost $shopsellb $shopsellc $itembdisp $itembcost $shopselld $shopselle Health Potion 50 $shopsellf"
+				read -s -n 1 shopbuysell
+					if [[ $shopbuysell = a ]] && [[ $shopsella = "[" ]]; then shopselle="["; shopsellf="]"; shopsellc=" "; shopselld=" "; shopsella=" "; shopsellb=" ";
+					elif [[ $shopbuysell = d ]] && [[ $shopsella = "[" ]]; then shopsella=" "; shopsellb=" "; shopsellc="["; shopselld="]"; shopselle=" "; shopsellf=" ";
+					elif [[ $shopbuysell = a ]] && [[ $shopsellc = "[" ]]; then shopsella="["; shopsellb="]"; shopsellc=" "; shopselld=" "; shopselle=" "; shopsellf=" ";
+					elif [[ $shopbuysell = d ]] && [[ $shopsellc = "[" ]]; then shopsella=" "; shopsellb=" "; shopselle="["; shopsellf="]"; shopsellc=" "; shopselld=" ";
+					elif [[ $shopbuysell = a ]] && [[ $shopselle = "[" ]]; then shopsellc="["; shopselld="]"; shopselle=" "; shopsellf=" "; shopsella=" "; shopsellb=" ";
+					elif [[ $shopbuysell = d ]] && [[ $shopselle = "[" ]]; then shopsellc=" "; shopselld=" "; shopsella="["; shopsellb="]"; shopselle=" "; shopsellf=" ";
+					elif [[ $(echo $shopbuysell"a") = a ]]; then
+						if [[ $shopsella = "[" ]]; then
+							if [[ $money -gt $itemacost ]] || [[ $money = $itemacost ]]; then
+							weapon=$itema; weaponame; weapon1health=$weaponhealth; let money=$money-$itemacost; echo "You Purchased (a(n)) $itemadisp"; enter
+							else echo "You dont have enogh money to do this"; enter; fi
+						elif [[ $shopsellc = "[" ]]; then
+							if [[ $money -gt $itembcost ]] || [[ $money = $itembcost ]]; then
+							weapon=$itemb; weaponame; weapon1health=$weaponhealth; let money=$money-$itembcost; echo "You Purchased (a(n)) $itembdisp"; enter
+							else echo "You dont have enogh money to do this"; enter; fi
+						elif [[ $shopselle = "[" ]]; then
+							if [[ $money -gt 50 ]] || [[ $money = 50 ]]; then
+							let healthpotions=$healthpotions+1; let money=$money-50; echo "You bought a potion for 50 Gold"; enter
+							else echo "You dont have enogh money to do this"; enter; fi
+						fi
+					elif [[ $shopbuysell = w ]]; then shopbuy=true
+					fi
+			done
+		elif [[ $shopsellc = "[" ]]; then
+			shopsell=false; until [[ $shopsell = true ]]; do 
+				echo "\ $money Gold /\ x$healthpotions Potions/\ Weapon: $weaponame /"
+				echo "$shopsella $invadisp $invacost $shopsellb $shopsellc $invbdisp $invbcost $shopselld $shopselle Health Potion 35 $shopsellf"
+			done
+		fi
+	elif [[ $shopbuysell = w ]]; then shopexit=true
+	fi
+done
+}
+function save { rm "$wdir/data"
+	echo "Name $name" >> $wdir/data
+	echo "Level $level" >> $wdir/data
+	echo "Weapon $weapon" "$weapon1health">>  $wdir/data
+	echo "Xp $xp" >> $wdir/data
+	echo "Healthpotions $healthpotions" >> $wdir/data
+	echo "X $charx" >> $wdir/data
+	echo "Y $chary" >> $wdir/data
+	echo "Map $map" >> $wdir/data
+	echo "Money $money" >> $wdir/data
+	echo "Inva $inva $weapon2health" >> $wdir/data
+	echo "Invb $invb $weapon3health" >> $wdir/data
+}
+function clearallvars { m11=" "; m12=" "; m13=" "; m14=" "; m15=" "; m21=" "; m22=" "; m23=" "; m24=" "; m25=" "; m31=" "; m32=" "; m33=" "; m34=" "; m35=" "; m41=" "; m42=" "; m43=" "; m44=" "; m45=" "
+}
+function mapdisplay { health=$(awk "BEGIN {print $level*160/2}"); hud; if [[ $map = 1 ]]; then 
+if [[ $level -lt 15 ]]; then mapgoalmark="X"; else mapgoalmark="O"; fi
+echo -e "$hud\n+---+---+---+---+-$mapgoalmark-+\n| $m41 | $m42 | $m43 | $m44 $mapgoalmark $m45 $mapgoalmark\n+---+---+---+---+-$mapgoalmark-+\n| $m31 | $m32 | $m33 | $m34 | $m35 |\n+---+---+---+---+---+\n| $m21 | $m22 | $m23 | $m24 | $m25 |\n+---+---+---+---+---+\n| $m11 | $m12 | $m13 | $m14 | $m15 |\n+---+---+---+---+---+"; mapgoal=45
+elif [[ $level -gt 14 ]] && [[ $level -lt 21 ]]; then
+if [[ $level -lt 22 ]]; then mapgoalmark="X"; else mapgoalmark="O"; fi
+echo -e "$hud\n+---+---+---+---+---+\n| $m41 | $m42 | $m43 | $m44 | $m45 |\n+---+---+---+---+---+\n| $m31 | $m32 | $m33 | $m34 | $m35 |\n+---+---+---+---+---+\n| $m21 | $m22 | $m23 | $m24 | $m25 |\n+-$mapgoalmark-+---+---+---+-S-+\n$mapgoalmark $m11 $mapgoalmark $m12 | $m13 | $m14 S $m15 S\n+-$mapgoalmark-+---+---+---+-S-+"; mapgoal=11; shop=true; shoploc=15
+fi
+if [[ $charx$chary = $shoploc ]]; then
+echo "Press S to enter shop"
+fi
+if [[ $charx$chary = $mapgoal ]] && [[ $mapgoalmark = X ]]; then
+echo "You need more levels to pass through this gate"
+fi
+}
+function poscorrect { if [[ $charx -gt 4 ]]; then charx=4; fi
+	if [[ $charx -lt 1 ]]; then charx=1; fi
+	if [[ $chary -gt 5 ]]; then chary=5; fi
+	if [[ $chary -lt 1 ]]; then chary=1; fi
+}
+function move { moveexit=false; until [[ $moveexit = true ]]; do read -s -n 1 movement;
+	if [[ $movement = w ]]; then let charx=$charx+1; poscorrect; moveexit=true
+	elif [[ $movement = s ]]; then let charx=$charx-1; poscorrect; moveexit=true
+	elif [[ $movement = a ]]; then let chary=$chary-1; poscorrect; moveexit=true
+	elif [[ $movement = d ]]; then let chary=$chary+1; poscorrect; moveexit=true
+	fi
+	done
+if [[ $charx$chary = $shoploc ]]; then if [[ $movement = s ]]; then shop; fi; fi
+save
+}
+function location { if [[ $charx = 1 ]]; then
+	if [[ $chary = 1 ]]; then m11=X; elif [[ $chary = 2 ]]; then m12=X; elif [[ $chary = 3 ]]; then m13=X; elif [[ $chary = 4 ]]; then m14=X; elif [[ $chary = 5 ]]; then m15=X; fi
+elif [[ $charx = 2 ]]; then
+	if [[ $chary = 1 ]]; then m21=X; elif [[ $chary = 2 ]]; then m22=X; elif [[ $chary = 3 ]]; then m23=X; elif [[ $chary = 4 ]]; then m24=X; elif [[ $chary = 5 ]]; then m25=X; fi
+elif [[ $charx = 3 ]]; then
+	if [[ $chary = 1 ]]; then m31=X; elif [[ $chary = 2 ]]; then m32=X; elif [[ $chary = 3 ]]; then m33=X; elif [[ $chary = 4 ]]; then m34=X; elif [[ $chary = 5 ]]; then m35=X; fi
+elif [[ $charx = 4 ]]; then
+	if [[ $chary = 1 ]]; then m41=X; elif [[ $chary = 2 ]]; then m42=X; elif [[ $chary = 3 ]]; then m43=X; elif [[ $chary = 4 ]]; then m44=X; elif [[ $chary = 5 ]]; then m45=X; fi
+fi
+}
+function enter { fenter=false; echo "[ space ]"; until [[ $fenter = true ]]; do read -s -n 1 fenterinput; if [[ $(echo $fenterinput"a") = a ]]; then fenter=true; fi; done
+}
+function fight { tdd=" "; ydd=" "; playmd=0; charmd=0; hits=0; fastforward=false; usehealthpotion=false; fexit=false; inventory=false; until [[ $fexit = true ]]; do clear; levelmod=$(awk "BEGIN {print $level/2 }")
+if [[ $(echo $health | sed 's/[.]/ /g' | awk '{print $1}') -lt 1 ]]; then health=0; dead=true; fexit=true
+elif [[ $(echo $hp | sed 's/[.]/ /g' | awk '{print $1}') -lt 1 ]]; then hp=0; dead=false; sxp=$(awk "BEGIN {print $charlvl*1000}"); fexit=true; fi
+hud; charweaponame
+echo -e "$hud $tdd\n"
+echo -e " / $hp% Health \ $ydd\n| Lvl.$charlvl $charname\t | Weapon: $charweaponame"
+if [[ $fastforward = false ]]; then
+	pa=b; until [[ $pa = a ]]; do read -s -n 1 p; 
+		if [[ $p = h ]]; then usehealthpotion=true; pa=a
+		elif [[ $p = d ]]; then fastforward=true; pa=a
+		elif [[ $p = i ]]; then
+			invbweaponame; invaweaponame; shopsella="["; shopsellb="]"; shopsellc=" "; shopselld=" "; shopselle=" "; shopsellf=" "; inv=false; until [[ $inv = true ]]; do clear; 
+				echo "Select an Item to Swap, X to exit"
+				echo "$shopsella $weaponame $weapon1health $shopsellb $shopsellc $invaname $weapon2health $shopselld $shopselle $invbname $weapon3health $shopsellf"
+				read -s -n 1 shopbuysell
+					if [[ $shopbuysell = a ]] && [[ $shopsella = "[" ]]; then shopselle="["; shopsellf="]"; shopsellc=" "; shopselld=" "; shopsella=" "; shopsellb=" ";
+					elif [[ $shopbuysell = d ]] && [[ $shopsella = "[" ]]; then shopsella=" "; shopsellb=" "; shopsellc="["; shopselld="]"; shopselle=" "; shopsellf=" ";
+					elif [[ $shopbuysell = a ]] && [[ $shopsellc = "[" ]]; then shopsella="["; shopsellb="]"; shopsellc=" "; shopselld=" "; shopselle=" "; shopsellf=" ";
+					elif [[ $shopbuysell = d ]] && [[ $shopsellc = "[" ]]; then shopsella=" "; shopsellb=" "; shopselle="["; shopsellf="]"; shopsellc=" "; shopselld=" ";
+					elif [[ $shopbuysell = a ]] && [[ $shopselle = "[" ]]; then shopsellc="["; shopselld="]"; shopselle=" "; shopsellf=" "; shopsella=" "; shopsellb=" ";
+					elif [[ $shopbuysell = d ]] && [[ $shopselle = "[" ]]; then shopsellc=" "; shopselld=" "; shopsella="["; shopsellb="]"; shopselle=" "; shopsellf=" ";
+					elif [[ $(echo $shopbuysell"a") = a ]]; then
+						if [[ $shopsella = "[" ]]; then
+							echo "Select Item to Swap, X to exit"
+							echo "$shopsella $weaponame $weapon1health $shopsellb $shopsellc $invaname $weapon2health $shopselld $shopselle $invbname $weapon3health $shopsellf"
+							enter
+							inv=true
+						elif [[ $shopsellc = "[" ]]; then
+							weaponsave=$weapon; weapon=$invb; invb=$weaponsave; weaponhealthsave=$weapon1health weapon1health=$weapon2health; weapon2health=$weaponhealthsave; weaponhealthsave=0; weaponame; invaweaponame; clear
+							echo "\ $money Gold /\ x$healthpotions Potions/\ Weapon: $weaponame /"
+							echo "$shopsella $weaponame $weapon1health $shopsellb $shopsellc $invaname $weapon2health $shopselld $shopselle $invbname $weapon3health $shopsellf"
+							enter
+							inv=true
+						elif [[ $shopselle = "[" ]]; then
+							weaponsave=$weapon; weapon=$invb; invb=$weaponsave; weaponhealthsave=$weapon1health weapon1health=$weapon3health; weapon3health=$weaponhealthsave; weaponhealthsave=0; weaponame; invbweaponame; clear
+							echo "\ $money Gold /\ x$healthpotions Potions/\ Weapon: $weaponame /"
+							echo "$shopsella $weaponame $weapon1health $shopsellb $shopsellc $invaname $weapon2health $shopselld $shopselle $invbname $weapon3health $shopsellf"
+							enter
+							inv=true
+						fi
+					elif [[ $shopbuysell = x ]]; then inv=true
+					fi
+			done; clear
+			hud; charweaponame
+			echo -e "$hud $tdd\n"
+			echo -e " / $hp% Health \ $ydd\n| Lvl.$charlvl $charname\t | Weapon: $charweaponame"
+		elif [[ $p = a ]]; then pa=a
+		fi
+	done
+fi
+	if [[ $usehealthpotion = true ]]; then
+		if [[ $healthpotions -gt 0 ]]; then
+			tdmg="-100"; tdd="+100"; ydd="-0"; usehealthpotion=false; let healthpotions=$healthpotions-1
+		else
+			echo "Error, No Potions"; usehealthpotion=false; tdd=" "; ydd=" "; ydmg=0; tdmg=0; 
+			enter
+		fi
+	elif [[ $usehealthpotion = false ]]; then
+		if [[ $weapon = 0 ]]; then ydmg=$((RANDOM%31)); hp=$(awk "BEGIN {print $hp-$ydmg }"); ydd=$(echo "-$ydmg")
+		elif [[ $weapon = 1 ]]; then ydmg=$(awk "BEGIN {print $((RANDOM%40))+$levelmod}"); hp=$(awk "BEGIN {print $hp-$ydmg }"); ydd=$(echo "-$ydmg")
+		elif [[ $weapon = 2 ]]; then ydmg=$(awk "BEGIN {print $((RANDOM%50))+$levelmod}"); hp=$(awk "BEGIN {print $hp-$ydmg }"); ydd=$(echo "-$ydmg")
+		elif [[ $weapon = 3 ]]; then ydmg=$(awk "BEGIN {print $((RANDOM%75))+$levelmod}"); hp=$(awk "BEGIN {print $hp-$ydmg }"); ydd=$(echo "-$ydmg")
+		elif [[ $weapon = 4 ]]; then ydmg=$(awk "BEGIN {print $((RANDOM%100))+$levelmod}"); hp=$(awk "BEGIN {print $hp-$ydmg }"); ydd=$(echo "-$ydmg")
+		elif [[ $weapon = 5 ]]; then ydmg=$(awk "BEGIN {print $((RANDOM%125))+$levelmod}"); hp=$(awk "BEGIN {print $hp-$ydmg }"); ydd=$(echo "-$ydmg")
+		elif [[ $weapon = 6 ]]; then ydmg=$(awk "BEGIN {print $((RANDOM%150))+$levelmod}"); hp=$(awk "BEGIN {print $hp-$ydmg }"); ydd=$(echo "-$ydmg")
+		fi
+		if [[ $charweap = 0 ]]; then tdmg=$((RANDOM%28)); tdd=$(echo "-$tdmg")
+		elif [[ $charweap = 1 ]]; then tdmg=$(awk "BEGIN {print $((RANDOM%29))+$levelmod}"); tdd=$(echo "-$tdmg")
+		elif [[ $charweap = 2 ]]; then tdmg=$(awk "BEGIN {print $((RANDOM%40))+$levelmod}"); tdd=$(echo "-$tdmg")
+		elif [[ $charweap = 3 ]]; then tdmg=$(awk "BEGIN {print $((RANDOM%65))+$levelmod}"); tdd=$(echo "-$tdmg")
+		elif [[ $charweap = 4 ]]; then tdmg=$(awk "BEGIN {print $((RANDOM%90))+$levelmod}"); tdd=$(echo "-$tdmg")
+		elif [[ $charweap = 5 ]]; then tdmg=$(awk "BEGIN {print $((RANDOM%115))+$levelmod}"); tdd=$(echo "-$tdmg")
+		elif [[ $charweap = 6 ]]; then tdmg=$(awk "BEGIN {print $((RANDOM%140))+$levelmod}"); tdd=$(echo "-$tdmg")
+		fi
+		if [[ $weapon1health != inf ]]; then let weapon1health=$weapon1health-1; if [[ $weapon1health -lt 1 ]]; then weapon=0; weapon1health=inf; fastforward=false; fi; fi
+	fi
+if [[  $(echo $ydmg | sed 's/[.]/ /g' | awk '{print $1}') -gt $(echo $playmd | sed 's/[.]/ /g' | awk '{print $1}') ]]; then playmd=$ydmg; fi
+if [[  $(echo $tdmg | sed 's/[.]/ /g' | awk '{print $1}') -gt $(echo $charmd | sed 's/[.]/ /g' | awk '{print $1}') ]]; then charmd=$tdmg; fi
+health=$(awk "BEGIN {print $health-($tdmg) }")
+let hits=$hits+1
+done
+}
+function fighthelp { health=$(awk "BEGIN {print $level*160/2}"); hud; 
+if [[ $charx$chary != $mapgoal ]]; then
+	if [[ $((RANDOM%4)) = 0 ]]; then chargen; fight
+		if [[ $dead = true ]]; then rm "$wdir/data"
+		echo "Name $name" >> $wdir/data
+		echo "Level 10" >> $wdir/data; level=10
+		echo "Weapon 0 inf" >>  $wdir/data; weapon=0
+		echo "Xp 0" >> $wdir/data; xp=0
+		echo "Healthpotions 1" >> $wdir/data; healthpotions=1
+		echo "X 1" >> $wdir/data; charx=1
+		echo "Y 1" >> $wdir/data; chary=1
+		echo "Map 1" >> $wdir/data; map=1
+		echo "Money 0" >> $wdir/data; money=0
+		echo "Inva 0 0" >> $wdir/data; inva=0
+		echo "Invb 0 0" >> $wdir/data; invb=0
+		healthpotions=1
+		echo "+--------+"
+		echo "Defeat"
+		echo "Most Damage Dealt $name: $playmd"
+		echo "Most Damage Dealt $charname: $charmd"
+		echo "+--------+"
+		elif [[ $dead = false ]]; then
+		echo "Victorius"
+		echo "Gained $sxp xp"
+		echo "Gained $chargold Gold"
+		echo "Attacks: $hits"
+		echo "Most Damage Dealt $name: $playmd"
+		echo "Most Damage Dealt $charname: $charmd"
+		let xp=$xp+$sxp
+		let money=$chargold+$money
+		levelup
+			if [[ $charweap -gt 0 ]]; then shopsella="["; shopsellb="]"; shopsellc=" "; shopselld=" "; shopselle=" "; shopsellf=" "; ynex=false
+				until [[ $ynex = true ]]; do
+					charweaponame; echo "$charname dropped a $charweaponame, would you like to pick it up?"; read -s -n 1 -p "(y/n) " yn
+					if [[ $yn !=  y ]] && [[ $yn != n ]]; then echo "$yn is not a y or a n, please input a y or n"; enter
+					elif [[ $yn = y ]]; then 
+						pickup=false; until [[ $pickup = true ]]; do clear; invbweaponame; invaweaponame
+						echo "\ $money Gold /\ x$healthpotions Potions/\ Weapon: $weaponame /"
+						echo "$shopsella $weaponame $weapon1health $shopsellb $shopsellc $invaname $weapon2health $shopselld $shopselle $invbname $weapon3health $shopsellf"
+						read -s -n 1 shopbuysell
+							if [[ $shopbuysell = a ]] && [[ $shopsella = "[" ]]; then shopselle="["; shopsellf="]"; shopsellc=" "; shopselld=" "; shopsella=" "; shopsellb=" ";
+							elif [[ $shopbuysell = d ]] && [[ $shopsella = "[" ]]; then shopsella=" "; shopsellb=" "; shopsellc="["; shopselld="]"; shopselle=" "; shopsellf=" ";
+							elif [[ $shopbuysell = a ]] && [[ $shopsellc = "[" ]]; then shopsella="["; shopsellb="]"; shopsellc=" "; shopselld=" "; shopselle=" "; shopsellf=" ";
+							elif [[ $shopbuysell = d ]] && [[ $shopsellc = "[" ]]; then shopsella=" "; shopsellb=" "; shopselle="["; shopsellf="]"; shopsellc=" "; shopselld=" ";
+							elif [[ $shopbuysell = a ]] && [[ $shopselle = "[" ]]; then shopsellc="["; shopselld="]"; shopselle=" "; shopsellf=" "; shopsella=" "; shopsellb=" ";
+							elif [[ $shopbuysell = d ]] && [[ $shopselle = "[" ]]; then shopsellc=" "; shopselld=" "; shopsella="["; shopsellb="]"; shopselle=" "; shopsellf=" ";
+							elif [[ $(echo $shopbuysell"a") = a ]]; then
+								if [[ $shopsella = "[" ]]; then
+									weapon=$charweap; weaponame; weapon1health=$weaponhealth; clear
+									echo "\ $money Gold /\ x$healthpotions Potions/\ Weapon: $weaponame /"
+									echo "$shopsella $weaponame $weapon1health $shopsellb $shopsellc $invaname $weapon2health $shopselld $shopselle $invbname $weapon3health $shopsellf"
+									enter
+									pickup=true; ynex=true
+								elif [[ $shopsellc = "[" ]]; then
+									inva=$charweap; invaweaponame; clear
+									echo "\ $money Gold /\ x$healthpotions Potions/\ Weapon: $weaponame /"
+									echo "$shopsella $weaponame $weapon1health $shopsellb $shopsellc $invaname $weapon2health $shopselld $shopselle $invbname $weapon3health $shopsellf"
+									enter
+									pickup=true; ynex=true
+								elif [[ $shopselle = "[" ]]; then
+									invb=$charweap; invbweaponame; clear
+									echo "\ $money Gold /\ x$healthpotions Potions/\ Weapon: $weaponame /"
+									echo "$shopsella $weaponame $weapon1health $shopsellb $shopsellc $invaname $weapon2health $shopselld $shopselle $invbname $weapon3health $shopsellf"
+									enter
+									pickup=true; ynex=true
+								fi
+							fi
+						done
+					elif [[ $yn = n ]]; then ynex=true
+					fi
+				done
+			fi
+			if [[ $charhealthpotion -gt 0 ]]; then enter; let healthpotions=$healthpotions+$charhealthpotion; echo -e "$charname dropped $charhealthpotion Potion(s)"; fi
+		save
+		fi
+	enter
+	fi
+elif [[ $charx$chary = $mapgoal ]] && [[ $mapgoalmark = O ]]; then
+let map=$map+1
+elif [[ $charx$chary = $shoploc ]]; then
+echo shop
+fi
+}
+function levelup { if [[ $xp -gt $(awk "BEGIN {print 59000+$(awk "BEGIN {print $level*1000-2000}")}") ]]; then enter; let level=$level+1; let xp=$xp-$(awk "BEGIN {print 59000+$(awk "BEGIN {print $level*1000-1000}")}"); echo Level Up; fi
+}
+function chargen { if [[ $level -gt 9 ]] && [[ $level -lt 15 ]]; then char=$((RANDOM%2)); charname; charlvl=$(awk "BEGIN {print $charbaselvl+$((RANDOM%5))}"); hp=$(awk "BEGIN {print $charbaselvl*100-$((RANDOM%25))}"); charweap=$((RANDOM%2)); let chargold=$charlvl/2*9
+	elif [[ $level -gt 14 ]] && [[ $level -lt 21 ]]; then char=$((RANDOM%4)); charname; charlvl=$(awk "BEGIN {print $charbaselvl+$((RANDOM%5))}"); hp=$(awk "BEGIN {print $charbaselvl*100-$((RANDOM%25))}"); charweap=$((RANDOM%3)); let chargold=$charlvl/2*9
+	elif [[ $level -gt 19 ]] && [[ $level -lt 26 ]]; then char=$((RANDOM%4)); charname; charlvl=$(awk "BEGIN {print $charbaselvl+$((RANDOM%5))}"); hp=$(awk "BEGIN {print $charbaselvl*100-$((RANDOM%25))}"); charweap=$((RANDOM%4)); let chargold=$charlvl/2*9
+	elif [[ $level -gt 24 ]] && [[ $level -lt 31 ]]; then char=$((RANDOM%5)); charname; charlvl=$(awk "BEGIN {print $charbaselvl+$((RANDOM%5))}"); hp=$(awk "BEGIN {print $charbaselvl*100-$((RANDOM%25))}"); charweap=$((RANDOM%5)); let chargold=$charlvl/2*9
+	elif [[ $level -gt 29 ]]; then char=$((RANDOM%5)); charname; charlvl=$(awk "BEGIN {print $charbaselvl/2+$((RANDOM%$level))}");  hp=$(awk "BEGIN {print $charlvl*$level/2}"); charweap=$((RANDOM%6)); let chargold=$charlvl/2*9
+	fi
+}
+function weaponame { if [[ $weapon = 0 ]]; then weaponame="Fist"; weaponval=0; weaponhealth=inf; elif [[ $weapon = 1 ]]; then weaponame=Dagger; weaponval=1000; weaponhealth=300; elif [[ $weapon = 2 ]]; then weaponame=Sword; weaponval=1500; weaponhealth=600; elif [[ $weapon = 3 ]]; then weaponame="Dragon Sword"; weaponval=3000; weaponhealth=1200; elif [[ $weapon = 4 ]]; then weaponame="Soul Crusher"; weaponval=4000; weaponhealth=2000; elif [[ $weapon = 5 ]]; then weaponame="Thunder Sword"; weaponval=5500; weaponhealth=3000; elif [[ $weapon = 6 ]]; then weaponame="Death's Scimitar"; weaponval=10000; weaponhealth=4000; fi
+}
+function charweaponame { if [[ $charweap = 0 ]]; then charweaponame="Fist"; weaponval=0; weaponhealth=inf; elif [[ $charweap = 1 ]]; then charweaponame=Dagger; weaponval=1000; weaponhealth=300; elif [[ $charweap = 2 ]]; then charweaponame=Sword; weaponval=1500; weaponhealth=600; elif [[ $charweap = 3 ]]; then charweaponame="Dragon Sword"; weaponval=3000; weaponhealth=1200; elif [[ $charweap = 4 ]]; then charweaponame="Soul Crusher"; weaponval=4000; weaponhealth=2000; elif [[ $charweap = 5 ]]; then charweaponame="Thunder Sword"; weaponval=5500; weaponhealth=3000; elif [[ $charweap = 6 ]]; then charweaponame="Death's Scimitar"; weaponval=10000; weaponhealth=4000; fi
+}
+function invaweaponame { if [[ $inva = 1 ]]; then invaname=Dagger; weaponval=20; weapon2health=300; elif [[ $inva = 2 ]]; then invaname=Sword; weaponval=40; weapon2health=600; elif [[ $inva = 3 ]]; then invaname="Dragon Sword"; weaponval=60; weapon2health=1200; elif [[ $inva = 4 ]]; then invaname="Soul Crusher"; weaponval=80; weapon2health=2000; elif [[ $inva = 5 ]]; then invaname="Thunder Sword"; weaponval=100; weapon2health=3000; elif [[ $inva = 6 ]]; then invaname="Death's Scimitar"; weaponval=200; weapon2health=4000; elif [[ $inva = 0 ]]; then invaname="Empty"; weaponval="N.A."; weapon2health="N.A."; fi
+}
+function invbweaponame { if [[ $invb = 1 ]]; then invbname=Dagger; weaponval=20; weapon3health=300; elif [[ $invb = 2 ]]; then invbname=Sword; weaponval=40; weapon3health=600; elif [[ $invb = 3 ]]; then invbname="Dragon Sword"; weaponval=60; weapon3health=1200; elif [[ $invb = 4 ]]; then invbname="Soul Crusher"; weaponval=80; weapon3health=2000; elif [[ $invb = 5 ]]; then invbname="Thunder Sword"; weaponval=100; weapon3health=3000; elif [[ $invb = 6 ]]; then invbname="Death's Scimitar"; weaponval=200; weapon3health=4000; elif [[ $invb = 0 ]]; then invbname="Empty"; weaponval="N.A."; weapon3health="N.A."; fi
+}
+function charname { if [[ $char = 0 ]]; then charname="Goblin"; charbaselvl="8"; charhealthpotion=$((RANDOM%2)); elif [[ $char = 1 ]]; then charname="Shade"; charbaselvl="10"; elif [[ $char = 2 ]]; then charname="Troll"; charbaselvl="12"; elif [[ $char = 3 ]]; then charname="Dragon"; charbaselvl="16"; elif [[ $char = 4 ]]; then charname="Death"; charbaselvl="20"; fi
+}
+function hud { weaponame; hud=$(echo -e "| Lvl.$level $name\t | Weapon: $weaponame $weapon1health | Xp: $xp/$(awk "BEGIN {print 59000+$(awk "BEGIN {print $level*1000-1000}")}") | x$healthpotions Potions\n \ $health Health /\ $money Gold/")
+}
+until [[ $menuexit = true ]]; do clear
+echo -e "["$mvara"] Start\n["$mvarb"] Exit"
+read -s -n 1 mkey; 
+	if [[ $(echo $mkey"a") = a ]] && [[ $mvara = "*" ]]; then 
+	menuexit=true
+	elif [[ $(echo $mkey"a") = a ]] && [[ $mvarb = "*" ]]; then
+	exit 1
+	else
+		if [[ $mvara = "*" ]]; then mvarb="*"; mvara=" "; elif [[ $mvarb = "*" ]]; then mvarb=" "; mvara="*"; fi
+	fi
+done
+if [[ ! -f $wdir/data ]]; then nameex=false
+	until [[ $nameex = true ]]; do
+	read -n 7 -p "Name: " name
+		until [[ $ynex = true ]]; do
+			clear; echo "You have selected the name $name"; read -p "Is this ok? (y/n) " yn; ynex=false
+			if [[ $yn !=  y ]] && [[ $yn != n ]]; then echo "$yn is not a y or a n, please input a y or n"
+			elif [[ $yn = y ]]; then echo "Name $name" >> $wdir/data; ynex=true; nameex=true
+			elif [[ $yn = n ]]; then ynex=true
+			fi
+		done
+	done
+	echo "Level 10" >> $wdir/data; level=10
+	echo "Weapon 0 inf" >>  $wdir/data; weapon=0
+	echo "Xp 0" >> $wdir/data; xp=0
+	echo "Healthpotions 1" >> $wdir/data; healthpotions=1
+	echo "X 1" >> $wdir/data; charx=1
+	echo "Y 1" >> $wdir/data; chary=1
+	echo "Map 1" >> $wdir/data; map=1
+	echo "Money 0" >> $wdir/data; money=0
+	echo "Inva 0 0" >> $wdir/data
+	echo "Invb 0 0" >> $wdir/data
+else
+name=$(cat $wdir/data | grep "Name" | awk '{print $2}')
+level=$(cat $wdir/data | grep "Level" | awk '{print $2}')
+weapon=$(cat $wdir/data | grep "Weapon" | awk '{print $2}')
+weapon1health=$(cat $wdir/data | grep "Weapon" | awk '{print $3}')
+xp=$(cat $wdir/data | grep "Xp" | awk '{print $2}')
+healthpotions=$(cat $wdir/data | grep "Healthpotions" | awk '{print $2}')
+charx=$(cat $wdir/data | grep "X " | awk '{print $2}');
+chary=$(cat $wdir/data | grep "Y" | awk '{print $2}');
+map=$(cat $wdir/data | grep "Map" | awk '{print $2}')
+money=$(cat $wdir/data | grep "Money" | awk '{print $2}')
+inva=$(cat $wdir/data | grep "Inva" | awk '{print $2}')
+weapon2health=$(cat $wdir/data | grep "Inva" | awk '{print $3}')
+invb=$(cat $wdir/data | grep "Invb" | awk '{print $2}')
+weapon3health=$(cat $wdir/data | grep "Inva" | awk '{print $3}')
+fi
+
+###
+
+clear
+while true; do 
+clearallvars
+location
+mapdisplay
+move
+fighthelp
+clear; done

@@ -1,0 +1,6 @@
+#!/bin/bash
+if [[ -n $1 ]]; then
+	for i in $(ps aux | grep $1 | awk '{print $2}'); do kill $i; done
+else
+	echo "Usage: [ killa <process name> ]"
+fi

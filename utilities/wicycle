@@ -1,0 +1,6 @@
+#!/bin/bash
+while true; do
+read -s -n 1 -p "Press any key to cycle wifi power" i
+networksetup -setairportpower en0 off; networksetup -setairportpower en0 on
+echo ""
+done

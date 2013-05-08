@@ -1,0 +1,28 @@
+#!/bin/bash
+# bssidhelper version 2.0 Beta (c) 2013
+wdir="`dirname \"$0\"`"; check=true; if [[ ! -f "$wdir/bssids.txt" ]]; then echo "#" > $wdir/bssids.txt; fi
+function newloc { lines=$(wc -l < $wdir/bssids.txt)
+sed "$lines"d $wdir/bssids.txt > $wdir/.bss1ds; rm $wdir/bssids.txt; mv $wdir/.bss1ds $wdir/bssids.txt
+echo -e "$(echo $nloc | sed 's/ /_/g') $cssid\n#" >> $wdir/bssids.txt
+}
+while true; do
+	while read line; do
+	cssid="$(/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport /usr/sbin/airport -I | grep "BSSID*" | sed 's/:/%/g' | awk '{print $2}')"
+	room=$(echo $line | awk '{print $1}'); rssid=$(echo $line | awk '{print $2}')
+		if [[ $rssid = $cssid ]]; then
+			if [[ $room != $oroom ]]; then
+			echo "Location = $room"; check=false; oroom=$room; else check=false
+			fi
+		elif [[ $(echo $cssid"a") = a ]] || [[ $cssid = "0%0%0%0%0%0" ]]; then
+			echo "No current Bssid (Offline Maybe?)"; check=false; t=0
+				while [[ $(echo $cssid"a") = a ]] || [[ $cssid = "0%0%0%0%0%0" ]]; do
+				cssid="$(/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport /usr/sbin/airport -I | grep "BSSID*" | sed 's/:/%/g' | awk '{print $2}')"
+				let t=$t+1; sleep 0.5
+				done
+		fi
+	done < $wdir/bssids.txt
+		if [[ $check = true ]]; then if [[ $rssid != $cssid ]]; then
+		read -p "New Location Found, enter location name > " nloc < /dev/tty && newloc
+		fi; fi; check=true
+sleep 0.5
+done

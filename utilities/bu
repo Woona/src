@@ -1,0 +1,50 @@
+#!/bin/bash
+wdir="`dirname \"$0\"`"; counter=0; counter2=0;
+function status { 
+	echo "File Size = "`ls -lh ~/Desktop | grep "$filename"_bu | awk '{print $5}'`" | Time = $SECONDS" Seconds
+}
+function checkfile {
+	if [[ ! -f $file ]] && [[ ! -d $file ]] || [[ $(echo $file"a") = a ]]; then 
+		echo "$file does not exist"
+	fi
+	if [[ -d $file ]]; then 
+		filetype=dir
+	else
+		filetype=file
+	fi
+	filename=$(echo $file | sed 's/[\]//g;s/[ ]/_/g;s/[/]/ /g' | awk '{print $NF}' | sed 's/[_]/ /g')
+	if [[ ! -d ~/Desktop/"$filename"_bu ]]; then 
+		mkdir ~/Desktop/"$filename"_bu; 
+	fi
+	started=$(awk "BEGIN {print "$(let date=$(date "+%-H")*60 && echo $date)"+"$(date "+%-M")"}")
+}
+function compress_ {
+	cd "$file"
+	tar cvf ~/Desktop/"$filename"_bu"/$filename"_BackupTmp.tar * >/dev/null 2>&1
+	cd ~/Desktop/"$filename"_bu""
+	zip ~/Desktop/"$filename"_bu"/$filename"_Backup$counter"_$(date "+[%H : %M : %S]")" *.tar >/dev/null 2>&1; status
+	rm ~/Desktop/"$filename"_bu"/$filename"_BackupTmp.tar
+}
+read -p "Drag in file to backup >>> " file
+checkfile
+if [[ $filetype = file ]]; then echo file
+	until [[ $counter = 12 ]]; do
+	let counter=$counter+1
+	cp "$file" ~/Desktop/"$filename"_bu"/$filename"_Backup$counter"_$(date "+[%H : %M : %S]")"; status
+	sleep 15; done
+	while true; do
+	let counter=$counter+1; let counter2=$counter2+1
+	rm ~/Desktop/"$filename"_bu/$filename"_Backup$counter2"_*
+	cp "$file" ~/Desktop/"$filename"_bu"/$filename"_Backup$counter"_$(date "+[%H : %M : %S]")"; status
+	sleep 15; done
+elif [[ $filetype = dir ]]; then echo directory; cd "$file"
+	until [[ $counter = 12 ]]; do
+	let counter=$counter+1
+	compress_
+	sleep 15; done
+	while true; do
+	let counter=$counter+1; let counter2=$counter2+1
+	rm ~/Desktop/"$filename"_bu/$filename"_Backup$counter2"_*
+	compress_
+	sleep 15; done
+fi

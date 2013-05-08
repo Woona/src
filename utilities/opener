@@ -1,0 +1,10 @@
+#!/bin/bash
+echo "Drag in application"
+read app
+cd "$app"/Contents
+while read line; do
+	if [[ $exec = true ]]; then executable="$(echo $line | sed 's/[ ]/*/g;s/[<,>]/ /g' | awk '{print $2}' | sed 's/[*]/ /g')"; exec=false; fi
+	if [[ $line = "<key>CFBundleExecutable</key>" ]]; then exec=true; else exec=false; fi
+done < info.plist
+echo $executable
+cd MacOS && ./"$executable"

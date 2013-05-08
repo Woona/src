@@ -1,0 +1,23 @@
+#!/bin/bash
+air=""
+if [[ -n $* ]]; then
+	dscl . -create /Users/$1
+	dscl . -create /Users/$1 UserShell /bin/bash
+	dscl . -create /Users/$1 RealName $1
+	dscl . -create /Users/$1 UniqueID "$((RANDOM))"
+	dscl . -create /Users/$1 PrimaryGroupID 80
+	if [[ -n $3 ]]; then
+		dscl . -create /Users/$1 NFSHomeDirectory $3
+	else
+		dscl . -create /Users/$1 NFSHomeDirectory /Users/$1
+	fi
+	if [[ -n $2 ]]; then
+		dscl . -passwd /Users/luser $2
+	else
+		dscl . -passwd /Users/luser $air
+	fi
+	dscl . -append /Groups/admin GroupMembership $1
+else
+	echo "Usage: cuser [ username ] [ password ] [ home directory ]"
+	echo "       Needs to be run using sudo"
+fi
